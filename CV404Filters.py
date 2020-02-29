@@ -23,13 +23,14 @@ def gaussian_Filter(sigma = 0.1, shape= [3,3]):
     # generate gaussian kernal
     shape = np.asarray(shape)
     shape = shape//2 *2 + 1
+    [m,n] = shape//2
     filter = np.zeros(shape)
-    size = 2*int(4*sigma + 0.5) + 1
-    m = n = size // 2
-    if shape[0] < size:
-        m = shape[0]//2
-    if shape[1] < size:
-        n = shape[1]//2
+    # to set limts uncomment this
+    # size = 2*int(4*sigma + 0.5) + 1
+    # if shape[0] > size:
+    #     m = size//2
+    # if shape[1] > size:
+    #     n = size//2
     for x in range (-m, m+1):
         for y in range (-m, m+1):
             filter[x+m, y+m] =np.exp(-(x**2 + y**2)/(2*sigma**2))/(2*np.pi*(sigma**2))
