@@ -3,6 +3,12 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from scipy import ndimage, signal
 from skimage import filters
+import random 
+
+
+def rgb2gray(rgb_image):
+    # convert RGB img to grayScale img
+    return np.dot(rgb_image[...,:3], [0.299, 0.587, 0.114])
 
 def generate_gaussian_noise( mu, sigma, img_size ):
     #generrate random Gaussian noise array 
@@ -50,3 +56,19 @@ def roberts_H_edge_detection(img):
 def roberts_V_edge_detection(img):
     ROBERTS_V_MASK= np.array([[0,1],[-1,0]])
     return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
+
+def saltNpepper(gray_img, prob):
+    thre = 1-prob
+    output = np.zeros(gray_img.shape, np.uint8)
+    row = gray_img.shape[0]
+    col = gray_img.shape[1]
+    for i in range (row):
+        for j in range (col):
+            rndm = random.random()
+            if rndm < prob:
+                gray_img[i][j] =0
+            elif rndm > thre:
+                gray_img[i][j] =255
+            else:
+                output[i][j] = gray_img[i][j]
+    return output    
