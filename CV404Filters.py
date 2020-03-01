@@ -14,11 +14,6 @@ def add_gaussian_noise(mu, sigma, img):
     img_with_gaussian_noise = img + gaussian_noise
     return img_with_gaussian_noise
 
-def gaussian_Filter1(sigma, shape):
-    filter=np.zeros(shape)
-    filter[1,1]=1
-    return ndimage.gaussian_filter(filter, sigma) 
-
 def gaussian_Filter(sigma = 0.1, shape= [3,3]):
     # generate gaussian kernal
     shape = np.asarray(shape)
