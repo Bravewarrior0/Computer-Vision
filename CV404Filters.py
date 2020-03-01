@@ -36,3 +36,17 @@ def gaussian_Filter(sigma = 0.1, shape= [3,3]):
 def img_gaussian_Filter(img, sigma=0.1, shape=(3,3)):
     kernal = gaussian_Filter(sigma,shape)
     return signal.convolve2d(img,kernal,mode='valid')
+
+def roberts_edge_detection(img):
+    # output = np.sqrt(roberts_H_edge_detection(img)**2 + roberts_V_edge_detection(img)**2)
+    # it gives the same output but it should be faster
+    output = np.abs(roberts_H_edge_detection(img))+np.abs(roberts_V_edge_detection(img))
+    return output
+
+def roberts_H_edge_detection(img):
+    ROBERTS_H_MASK= np.array([[1,0],[0,-1]])
+    return signal.convolve2d(img,ROBERTS_H_MASK,mode='valid')
+
+def roberts_V_edge_detection(img):
+    ROBERTS_V_MASK= np.array([[0,1],[-1,0]])
+    return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
