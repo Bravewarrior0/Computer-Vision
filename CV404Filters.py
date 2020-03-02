@@ -58,36 +58,15 @@ def roberts_V_edge_detection(img):
     return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
 
 def prewitt(img):
-    detected = np.zeros(img.shape, np.uint8)
-    row, col = img.shape
-    horizontal = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
-    vertical = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
-    for i in range(1, row - 1):
-        for j in range(1, col - 1):
-            horizontalGrad = (horizontal[0, 0] * img[i - 1, j - 1]) + \
-                (horizontal[0, 1] * img[i - 1, j]) + \
-                (horizontal[0, 2] * img[i - 1, j + 1]) + \
-                (horizontal[1, 0] * img[i, j - 1]) + \
-                (horizontal[1, 1] * img[i, j]) + \
-                (horizontal[1, 2] * img[i, j + 1]) + \
-                (horizontal[2, 0] * img[i + 1, j - 1]) + \
-                (horizontal[2, 1] * img[i + 1, j]) + \
-                (horizontal[2, 2] * img[i + 1, j + 1])
-
-            verticalGrad = (vertical[0, 0] * img[i - 1, j - 1]) + \
-                (vertical[0, 1] * img[i - 1, j]) + \
-                (vertical[0, 2] * img[i - 1, j + 1]) + \
-                (vertical[1, 0] * img[i, j - 1]) + \
-                (vertical[1, 1] * img[i, j]) + \
-                (vertical[1, 2] * img[i, j + 1]) + \
-                (vertical[2, 0] * img[i + 1, j - 1]) + \
-                (vertical[2, 1] * img[i + 1, j]) + \
-                (vertical[2, 2] * img[i + 1, j + 1])
-
-        # Edge Magnitude
-            mag = np.sqrt(pow(horizontalGrad, 2.0) + pow(verticalGrad, 2.0))
-            detected[i - 1, j - 1] = mag
-    return detected        
+    vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+    horizontal = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+    horizontalGrad = signal.convolve2d(img,horizontal)
+    verticalGrad = signal.convolve2d(img,vertical)
+    output =  np.sqrt(pow(horizontalGrad, 2.0) + pow(verticalGrad, 2.0))
+    verticalGrad /= np.max(verticalGrad)
+    horizontalGrad /= np.max(horizontal) 
+    output /=  np.max(output) 
+    return output     
 
 
 def median_filter(img, filter_size):
