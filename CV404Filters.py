@@ -57,18 +57,76 @@ def roberts_V_edge_detection(img):
     ROBERTS_V_MASK= np.array([[0,1],[-1,0]])
     return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
 
-def saltNpepper(gray_img, prob):
-    thre = 1-prob
-    output = np.zeros(gray_img.shape, np.uint8)
-    row = gray_img.shape[0]
-    col = gray_img.shape[1]
-    for i in range (row):
-        for j in range (col):
+def prewitt(img):
+    detected = np.zeros(img.shape, np.uint8)
+    row, col = img.shape
+    horizontal = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+    vertical = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+    for i in range(1, row - 1):
+        for j in range(1, col - 1):
+            horizontalGrad = (horizontal[0, 0] * img[i - 1, j - 1]) + \
+                (horizontal[0, 1] * img[i - 1, j]) + \
+                (horizontal[0, 2] * img[i - 1, j + 1]) + \
+                (horizontal[1, 0] * img[i, j - 1]) + \
+                (horizontal[1, 1] * img[i, j]) + \
+                (horizontal[1, 2] * img[i, j + 1]) + \
+                (horizontal[2, 0] * img[i + 1, j - 1]) + \
+                (horizontal[2, 1] * img[i + 1, j]) + \
+                (horizontal[2, 2] * img[i + 1, j + 1])
+
+            verticalGrad = (vertical[0, 0] * img[i - 1, j - 1]) + \
+                (vertical[0, 1] * img[i - 1, j]) + \
+                (vertical[0, 2] * img[i - 1, j + 1]) + \
+                (vertical[1, 0] * img[i, j - 1]) + \
+                (vertical[1, 1] * img[i, j]) + \
+                (vertical[1, 2] * img[i, j + 1]) + \
+                (vertical[2, 0] * img[i + 1, j - 1]) + \
+                (vertical[2, 1] * img[i + 1, j]) + \
+                (vertical[2, 2] * img[i + 1, j + 1])
+
+        # Edge Magnitude
+            mag = np.sqrt(pow(horizontalGrad, 2.0) + pow(verticalGrad, 2.0))
+            detected[i - 1, j - 1] = mag
+    return detected        
+
+
+def median_filter(img, filter_size):
+    index = filter_size // 2
+    filtered = np.zeros(img.shape, np.uint8)
+
+    row, col = img.shape
+
+    for i in range(row):
+        for j in range(col):
+            temp = []
+            for z in range(filter_size):
+                if i + z - index < 0 or i + z - index > img.shape[0] - 1:
+                    for c in range(filter_size):
+                        temp.append(0)
+                else:
+                    if j + z - index < 0 or j + index > img.shape[1] - 1:
+                        temp.append(0)
+                    else:
+                        for k in range(filter_size):
+                            temp.append(img[i + z - index][j + k - index])
+
+            temp.sort()
+            filtered[i][j] = temp[len(temp) // 2]
+
+    return filtered
+
+
+def saltNpepper(img, low):
+    high = 1-low
+    output = np.zeros(img.shape, np.uint8)
+    row, col = img.shape
+    for i in range(row):
+        for j in range(col):
             rndm = random.random()
-            if rndm < prob:
-                gray_img[i][j] =0
-            elif rndm > thre:
-                gray_img[i][j] =255
+            if rndm < low:
+                output[i][j] = 0
+            elif rndm > high:
+                output[i][j] = 255
             else:
-                output[i][j] = gray_img[i][j]
-    return output    
+                output[i][j] = img[i][j]
+    return output
