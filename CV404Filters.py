@@ -59,14 +59,27 @@ def roberts_V_edge_detection(img):
 
 def prewitt(img):
     vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
-    horizontal = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
-    horizontalGrad = signal.convolve2d(img,horizontal)
-    verticalGrad = signal.convolve2d(img,vertical)
-    output =  np.sqrt(pow(horizontalGrad, 2.0) + pow(verticalGrad, 2.0))
-    verticalGrad /= np.max(verticalGrad)
-    horizontalGrad /= np.max(horizontal) 
-    output /=  np.max(output) 
-    return output     
+    horizontal = vertical.transpose()
+    hGrad = signal.convolve2d(img, horizontal)
+    vGrad = signal.convolve2d(img, vertical)
+    magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
+    direction = np.arctan2(vGrad, hGrad)
+    magnitude /= np.max(magnitude)
+    hGrad /= np.max(hGrad)
+    vGrad /= np.max(vGrad)
+    return magnitude
+
+def sobel(img):
+    vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
+    hGrad = signal.convolve2d(img, horizontal)
+    vGrad = signal.convolve2d(img, vertical)
+    magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
+    direction = np.arctan2(vGrad, hGrad)
+    magnitude /= np.max(magnitude)
+    hGrad /= np.max(hGrad)
+    vGrad /= np.max(vGrad)
+    return magnitude
 
 
 def median_filter(img, filter_size):
