@@ -122,3 +122,13 @@ def saltNpepper(img, low):
             else:
                 output[i][j] = img[i][j]
     return output
+
+
+def uniformNoise (img):
+    uniformNoise = np.zeros(img.shape, np.uint8)
+    row, col = img.shape
+
+    for x in range (row):
+        for y in range (col):
+            uniformNoise[x][y] = (random.uniform(0,255) + img[x][y]) / 2 
+    return uniformNoise
