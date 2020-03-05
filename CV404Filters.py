@@ -131,6 +131,10 @@ def sobel(img):
     # vGrad /= np.max(vGrad)
     return img_map(magnitude)
 
+def canny(img):
+    edges = cv2.Canny(img,100,200)
+    return canny
+
 def median_filter(img, filter_size):
     index = filter_size // 2
     filtered = np.zeros(img.shape, np.uint8)
