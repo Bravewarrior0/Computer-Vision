@@ -126,11 +126,20 @@ def prewitt(img):
 def sobel(img):
     img = cv2.imread(img)
     img = rgb2gray(img)
+def sobel1(img):
     vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
     horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
     hGrad = convolve_img(img, horizontal)
     vGrad = convolve_img(img, vertical)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
+    direction = np.arctan2(vGrad, hGrad)
+    magnitude /= np.max(magnitude)
+    # hGrad /= np.max(hGrad)
+    # vGrad /= np.max(vGrad)
+    return magnitude , direction
+
+def sobel(img):
+    magnitude , direction = sobel1(img)
     return img_map(magnitude)
 
 def median_filter(img, filter_size=3):
