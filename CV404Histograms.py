@@ -1,3 +1,4 @@
+import numpy as np
 def histogram(img):
     row, col = img.shape
     histo = {}
@@ -36,3 +37,12 @@ def equalization(img):
                 equalized_img[i,j] = roundoff[equalized_img[i,j]]
 
     return equalized_img
+
+# --------------thersholding----------------------------#
+def threshold_global(gray_image , threshold ):
+    threshold = np.max( gray_image ) * threshold
+    return 1 * ( gray_image > threshold )
+
+def threshold_global_auto(gray_image):
+    threshold = np.sum(gray_image)/(gray_image.size)
+    return 1 * ( gray_image > threshold )
