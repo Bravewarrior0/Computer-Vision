@@ -149,7 +149,73 @@
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="comboBox"/>
+         <widget class="QComboBox" name="comboBox_filters">
+          <item>
+           <property name="text">
+            <string>Gaussian noise</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Uniform noise</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Salt &amp; pepper noise</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>ِGaussian filter</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Median filter</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Average</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Sobel</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Roberts</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Prewitt</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>canny</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Laplacian of Gaussian</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Laplacian1</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Laplacian2</string>
+           </property>
+          </item>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -165,6 +231,111 @@
        <property name="title">
         <string>Additional Parameters</string>
        </property>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>20</y>
+          <width>88</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>filter size</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBox_filter_size">
+           <property name="minimum">
+            <number>3</number>
+           </property>
+           <property name="maximum">
+            <number>51</number>
+           </property>
+           <property name="singleStep">
+            <number>2</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>40</y>
+          <width>88</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_5">
+           <property name="text">
+            <string>sigma</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_sigma"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>40</y>
+          <width>75</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>mu</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_mu"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>20</y>
+          <width>77</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_7">
+           <property name="text">
+            <string>low</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="doubleSpinBox_low">
+           <property name="maximum">
+            <double>1.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>0.010000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </widget>
@@ -401,7 +572,7 @@
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>310</y>
+        <y>280</y>
         <width>71</width>
         <height>21</height>
        </rect>
@@ -414,7 +585,7 @@
       <property name="geometry">
        <rect>
         <x>30</x>
-        <y>290</y>
+        <y>260</y>
         <width>71</width>
         <height>21</height>
        </rect>
@@ -427,7 +598,7 @@
       <property name="geometry">
        <rect>
         <x>20</x>
-        <y>200</y>
+        <y>170</y>
         <width>121</width>
         <height>81</height>
        </rect>
@@ -449,6 +620,41 @@
        <string>Make Hybrid</string>
       </property>
      </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>320</y>
+        <width>88</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_6">
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>Alpha</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_alpha">
+         <property name="minimum">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>0.900000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.050000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.500000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </widget>
   </widget>
@@ -458,7 +664,7 @@
      <x>0</x>
      <y>0</y>
      <width>884</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
   </widget>

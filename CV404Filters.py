@@ -48,11 +48,9 @@ def img_map(img):
     elif len(img.shape) == 2:
         img = img_map_gray(img)
     return img
-
-def generate_gaussian_noise( mu, sigma, img_size ):
-    #generrate random Gaussian noise array 
-    return np.random.normal( mu, sigma, img_size)
-
+# -------------------------------------------------
+# ----------------- filters -----------------------
+# -------------------------------------------------
 def add_gaussian_noise(mu, sigma, img):
     #add randam Gaussian noise to the img
     gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)
@@ -85,11 +83,11 @@ def roberts_edge_detection(img):
 
 def roberts_H_edge_detection(img):
     ROBERTS_H_MASK= np.array([[1,0],[0,-1]])
-    return signal.convolve2d(img,ROBERTS_H_MASK,mode='valid')
+    return convolve_img(img,ROBERTS_H_MASK)
 
 def roberts_V_edge_detection(img):
     ROBERTS_V_MASK= np.array([[0,1],[-1,0]])
-    return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
+    return convolve_img(img,ROBERTS_V_MASK)
 
 def laplacian_of_gaussian (shape = 3, sigma='auto'):
     shape = make_odd(shape)
@@ -164,6 +162,12 @@ def median_filter(img, filter_size):
 
     return filtered
 
+# -------------------------------------------------
+# ------------------- Noise -----------------------
+# -------------------------------------------------
+def generate_gaussian_noise( mu, sigma, img_size ):
+    #generrate random Gaussian noise array 
+    return np.random.normal( mu, sigma, img_size)
 
 def saltNpepper(img, low):
     high = 1-low
