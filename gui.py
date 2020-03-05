@@ -19,7 +19,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.filterSize = self.spinBox_filter_size.value()
         self.mu = self.doubleSpinBox_mu.value()
         self.sigma = self.doubleSpinBox_sigma.value()
-
+        self.alpha = self.doubleSpinBox_alpha.value()
 
         self.comboBox_filters.currentTextChanged.connect(self.combo_selection)
         self.pushButton_filters_load.clicked.connect(self.filters_load_btn) 
@@ -31,7 +31,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.spinBox_filter_size.valueChanged.connect(self.FilterSize)
         self.doubleSpinBox_sigma.valueChanged.connect(self.sigmaFun)
         self.doubleSpinBox_mu.valueChanged.connect(self.muFun)
-
+        self.doubleSpinBox_alpha.valueChanged.connect(self.alphaFun)
+    def alphaFun(self):
+        self.alph= self.doubleSpinBox_alpha.value()
+        self.hybrid()
     def muFun(self):
         self.mu = self.doubleSpinBox_mu.value()
         self.gaussiaNoise()
@@ -55,8 +58,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.gaussianFilter()  
 
     def hybrid(self):
-        self.outlabel = self.label_histograms_output_2
-        hybrid_img = freq.hybrid(self.hyb1, self.hyb2)
+        hybrid_img = freq.hybrid(self.hyb1, self.hyb2, self.alpha)
         self.getImageFromArray(hybrid_img,self.label_histograms_output_2)
         
     def imgB_load_btn(self):
