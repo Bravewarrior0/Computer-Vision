@@ -11,40 +11,70 @@ def rgb2gray(rgb_image):
     # convert RGB img to grayScale img
     return np.dot(rgb_image[...,:3], [0.299, 0.587, 0.114])
 
-def generate_gaussian_noise( mu, sigma, img_size ):
-    #generrate random Gaussian noise array 
-    return np.random.normal( mu, sigma, img_size)
+def make_odd(num = 3):
+    num = num//2 *2 + 1
+    return num
 
-def add_gaussian_noise(mu, sigma, img):
-    #add randam Gaussian noise to the img
-    gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)
-    img_with_gaussian_noise = img + gaussian_noise
-    return img_with_gaussian_noise
+def convolve_img (img, kernal):
+    if len(img.shape) == 3:
+        out = np.zeros_like(img)
+        for i in range(3):
+            out[:,:,i]= signal.convolve2d(img[:,:,i],kernal,mode='same')
+        return out
+    elif len(img.shape) == 2:
+        return signal.convolve2d(img,kernal,mode='same')
 
-def gaussian_Filter(sigma = 0.1, shape= [3,3]):
+def padding_img(img,size =[0,0]):
+    size = np.asarray(size)
+    if(img.shape[0]>size[0]):
+        size[0] = img.shape[0]
+    if(img.shape[1]>size[1]):
+        size[1] = img.shape[1]
+    out = np.zeros(size)
+    x_offset = np.abs(size[0]-img.shape[0])//2
+    y_offset = np.abs(size[1]-img.shape[1])//2
+    out[x_offset:img.shape[0]+x_offset,y_offset:img.shape[1]+y_offset] = img
+    return out
+
+def img_map_gray(img):
+    if(img.min()<0):
+        img-=img.min()
+    img = img / img.max()
+    return img
+    
+def img_map(img):
+    if len(img.shape) == 3:
+        for i in range(3):
+            img[:,:,i]= img_map_gray(img[:,:,i])*255
+    elif len(img.shape) == 2:
+        img = img_map_gray(img)
+    return img
+# -------------------------------------------------
+# ----------------- filters -----------------------
+# -------------------------------------------------
+def gaussianFilterLogic(shape = 3, sigma ='auto'):
     # generate gaussian kernal
-    shape = np.asarray(shape)
-    shape = shape//2 *2 + 1
-    [m,n] = shape//2
-    filter = np.zeros(shape)
-    # to set limts uncomment this
-    # size = 2*int(4*sigma + 0.5) + 1
-    # if shape[0] > size:
-    #     m = size//2
-    # if shape[1] > size:
-    #     n = size//2
+    shape = make_odd(shape)
+    m = n = shape//2
+    filtered = np.zeros((shape,shape))
+    if sigma is 'auto':
+        sigma = sigma=np.sqrt(2*m+1)
     for x in range (-m, m+1):
         for y in range (-m, m+1):
-            filter[x+m, y+m] =np.exp(-(x**2 + y**2)/(2*sigma**2))/(2*np.pi*(sigma**2))
-    sum = filter.sum()
-    filter = filter * (1/sum)
-    return filter
+            filtered[x+m, y+m] =np.exp(-(x**2 + y**2)/(2*sigma**2))/(2*np.pi*(sigma**2))
+    summ = filtered.sum()
+    filtered = filtered * (1/summ)
+    return filtered
 
-def img_gaussian_Filter(img, sigma=0.1, shape=(3,3)):
-    kernal = gaussian_Filter(sigma,shape)
-    return signal.convolve2d(img,kernal,mode='valid')
+def gaussianFilter(img, shape= 3, sigma='auto'):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
+    kernal = gaussianFilterLogic(shape, sigma)
+    return convolve_img(img,kernal)
 
 def roberts_edge_detection(img):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
     # output = np.sqrt(roberts_H_edge_detection(img)**2 + roberts_V_edge_detection(img)**2)
     # it gives the same output but it should be faster
     output = np.abs(roberts_H_edge_detection(img))+np.abs(roberts_V_edge_detection(img))
@@ -52,43 +82,70 @@ def roberts_edge_detection(img):
 
 def roberts_H_edge_detection(img):
     ROBERTS_H_MASK= np.array([[1,0],[0,-1]])
-    return signal.convolve2d(img,ROBERTS_H_MASK,mode='valid')
+    return convolve_img(img,ROBERTS_H_MASK)
 
 def roberts_V_edge_detection(img):
     ROBERTS_V_MASK= np.array([[0,1],[-1,0]])
-    return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
+    return convolve_img(img,ROBERTS_V_MASK)
+
+def laplacian_of_gaussian (shape = 3, sigma='auto'):
+    shape = make_odd(shape)
+    m= n = shape//2
+    filtered = np.zeros((shape, shape))
+    if sigma is 'auto':
+        sigma = np.sqrt(2*m+1)
+    for x in range (-m, m+1):
+        for y in range (-m, m+1):
+            val = -(x**2 + y**2)/(2*sigma**2)
+            filtered[x+m, y+m] =np.exp(val)*(1+val)/(-1*np.pi*(sigma**4))
+    return filtered
+def img_laplacian_of_gaussian(img, shape = 3, sigma='auto'):
+    kernal = laplacian_of_gaussian(shape,sigma)
+    return convolve_img(img,kernal)
+
+def img_laplacian_filter(img):
+    kernal = [[1,1,1],[1,-8,1],[1,1,1]]
+    out = img_map(convolve_img(img, kernal))
+    return  out
+
+def laplacian_using_gaussian(img,shape = 3, sigma='auto'):
+    filtered = img_gaussianFilter(img,shape, sigma)
+    return img - filtered
 
 def prewitt(img):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
     vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
     horizontal = vertical.transpose()
-    hGrad = signal.convolve2d(img, horizontal)
-    vGrad = signal.convolve2d(img, vertical)
+    hGrad = convolve_img(img, horizontal)
+    vGrad = convolve_img(img, vertical)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
-    direction = np.arctan2(vGrad, hGrad)
-    magnitude /= np.max(magnitude)
-    hGrad /= np.max(hGrad)
-    vGrad /= np.max(vGrad)
-    return magnitude
+    # direction = np.arctan2(vGrad, hGrad)
+    # magnitude /= np.max(magnitude)
+    # hGrad /= np.max(hGrad)
+    # vGrad /= np.max(vGrad)
+    return img_map(magnitude)
 
 def sobel(img):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
     vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
     horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
-    hGrad = signal.convolve2d(img, horizontal)
-    vGrad = signal.convolve2d(img, vertical)
+    hGrad = convolve_img(img, horizontal)
+    vGrad = convolve_img(img, vertical)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
-    direction = np.arctan2(vGrad, hGrad)
-    magnitude /= np.max(magnitude)
-    hGrad /= np.max(hGrad)
-    vGrad /= np.max(vGrad)
-    return magnitude
+    # direction = np.arctan2(vGrad, hGrad)
+    # magnitude /= np.max(magnitude)
+    # hGrad /= np.max(hGrad)
+    # vGrad /= np.max(vGrad)
+    return img_map(magnitude)
 
-
-def median_filter(img, filter_size):
+def medianFilter(img, filter_size=3):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
     index = filter_size // 2
     filtered = np.zeros(img.shape, np.uint8)
-
     row, col = img.shape
-
     for i in range(row):
         for j in range(col):
             temp = []
@@ -108,8 +165,28 @@ def median_filter(img, filter_size):
 
     return filtered
 
+def averageFilter(img, filter_size = 3):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
+    filter_size = make_odd(filter_size)
+    kernal = np.ones((filter_size,filter_size))/(filter_size**2)
+    return convolve_img(img,kernal)
+# -------------------------------------------------
+# ------------------- Noise -----------------------
+# -------------------------------------------------
+def generate_gaussian_noise( mu, sigma, img_size ):
+    #generrate random Gaussian noise array 
+    return np.random.normal( mu, sigma, img_size)
 
-def saltNpepper(img, low):
+def gaussianNoise(mu, sigma, img):
+    #add randam Gaussian noise to the img
+    img = cv2.imread(img)
+    img = rgb2gray(img)
+    gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)
+    img_with_gaussian_noise = img + gaussian_noise
+    return img_with_gaussian_noise
+
+def saltNpepperNoise(img, low=.02):
     img = cv2.imread(img)
     img = rgb2gray(img)
     high = 1-low
@@ -128,10 +205,74 @@ def saltNpepper(img, low):
 
 
 def uniformNoise (img):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
     uniformNoise = np.zeros(img.shape, np.uint8)
     row, col = img.shape
-
     for x in range (row):
         for y in range (col):
             uniformNoise[x][y] = (random.uniform(0,255) + img[x][y]) / 2 
     return uniformNoise
+
+
+def non_max_suppression(img, D):
+    row, col = img.shape
+    result = np.zeros(img.shape, np.uint8)
+    angle = D * 180. / np.pi
+    angle[angle < 0] += 180
+
+    for i in range(1,row-1):
+        for j in range(1,col-1):
+            try:
+                q = 255
+                r = 255
+                
+               #angle 0
+                if (0 <= angle[i,j] < 22.5) or (157.5 <= angle[i,j] <= 180):
+                    q = img[i, j+1]
+                    r = img[i, j-1]
+                #angle 45
+                elif (22.5 <= angle[i,j] < 67.5):
+                    q = img[i+1, j-1]
+                    r = img[i-1, j+1]
+                #angle 90
+                elif (67.5 <= angle[i,j] < 112.5):
+                    q = img[i+1, j]
+                    r = img[i-1, j]
+                #angle 135
+                elif (112.5 <= angle[i,j] < 157.5):
+                    q = img[i-1, j-1]
+                    r = img[i+1, j+1]
+
+                if (img[i,j] >= q) and (img[i,j] >= r):
+                    Z[i,j] = img[i,j]
+                else:
+                    Z[i,j] = 0
+
+            except IndexError as e:
+                pass
+    
+    return Z   
+
+
+
+def threshold(img, lowThresholdRatio=0.05, highThresholdRatio=0.09):
+    
+    highThreshold = img.max() * highThresholdRatio;
+    lowThreshold = highThreshold * lowThresholdRatio;
+    
+    M, N = img.shape
+    res = np.zeros((M,N), dtype=np.int32)
+    
+    weak = np.int32(25)
+    strong = np.int32(255)
+    
+    strong_i, strong_j = np.where(img >= highThreshold)
+    zeros_i, zeros_j = np.where(img < lowThreshold)
+    
+    weak_i, weak_j = np.where((img <= highThreshold) & (img >= lowThreshold))
+    
+    res[strong_i, strong_j] = strong
+    res[weak_i, weak_j] = weak
+    
+    return (res, weak, strong)

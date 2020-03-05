@@ -7,14 +7,44 @@
 # WARNING! All changes made in this file will be lost!
 
 import CV404Filters as backend
+import CV404Histograms as hg
 from PyQt5 import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtGui import QPixmap
-
+import qimage2ndarray
 
 class Ui_MainWindow(object):
     
-    
+    def load_image_A_hybrid(self):
+        try:
+            options = QFileDialog.Options()
+            img_A, _ = QFileDialog.getOpenFileName(None, 'Upload Image', '', '*.png *.jpg *.jpeg',options=options)
+            pixmap = QPixmap(img_A)
+            pixmap = pixmap.scaled(self.label_histograms_input_2.width(),self.label_histograms_input_2.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_histograms_input_2.setPixmap(pixmap)
+           
+        except Exception as err:
+            print(err)
+    def load_image_B_hybrid(self):
+        try:
+            options = QFileDialog.Options()
+            img_B, _ = QFileDialog.getOpenFileName(None, 'Upload Image', '', '*.png *.jpg *.jpeg',options=options)
+            pixmap = QPixmap(img_B)
+            pixmap = pixmap.scaled(self.label_histograms_hinput_2.width(),self.label_histograms_hinput_2.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_histograms_hinput_2.setPixmap(pixmap)
+            
+        except Exception as err:
+            print(err)
+    def histogram_load_btn(self):
+        try:
+            options = QFileDialog.Options()
+            fileName_histo, _ = QFileDialog.getOpenFileName(None, 'Upload Image', '', '*.png *.jpg *.jpeg',options=options)
+            pixmap = QPixmap(fileName_histo)
+            pixmap = pixmap.scaled(self.label_filters_input.width(),self.label_filters_input.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_histograms_input.setPixmap(pixmap)
+            histo,_= hg.histogram(fileName_histo)
+        except Exception as err:
+            print(err)
     def filters_load_btn(self):
         try:
             options = QFileDialog.Options()
@@ -23,19 +53,56 @@ class Ui_MainWindow(object):
             pixmap = pixmap.scaled(self.label_filters_input.width(),self.label_filters_input.height(), QtCore.Qt.KeepAspectRatio)
             self.label_filters_input.setPixmap(pixmap)
             self.comboBox.setEnabled(True)
+            self.label_filters_output.clear()
         except Exception as err:
             print(err)
-
+    def getImageFromArray(self,array):
+            qimg = qimage2ndarray.array2qimage(array, normalize=True)
+            pixmap = QPixmap.fromImage(qimg)
+            pixmap = pixmap.scaled(self.label_filters_output.width(),self.label_filters_output.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_filters_output.setPixmap(pixmap)
     def combo_selection(self):
         value = self.comboBox.currentText()
-        if value == 'Salt & Pepper Noise':
-            img = backend.saltNpepper(self.fileName, 0.02)
+
+        if value == 'Average Filter':
+            img = backend.averageFilter(self.fileName)
+            self.getImageFromArray(img)
+
+        elif value == 'Gaussian Filter':
+            img = backend.gaussianFilter(self.fileName)
+            self.getImageFromArray(img)
+
+        elif value == 'Median Filter':
+            img = backend.medianFilter(self.fileName)
+            self.getImageFromArray(img)
+
+        elif value == 'Uniform Noise':
+            img = backend.uniformNoise(self.fileName)
+            self.getImageFromArray(img)
            
-          
-            print("s")
-        if value == 'Uniform Noise':
-           img = backend.uniformNoise(self.fileName)
-           print("u")
+        elif value == 'Gaussian Noise':
+            img = backend.gaussianNoise(self.fileName)
+            self.getImageFromArray(img)    
+
+        elif value == 'Salt & Pepper Noise':
+            img = backend.saltNpepperNoise(self.fileName)
+            self.getImageFromArray(img)  
+
+        elif value == 'Sobel ED':
+            img = backend.sobel(self.fileName)
+            self.getImageFromArray(img)
+
+        elif value == 'Roberts ED':
+            img = backend.roberts_edge_detection(self.fileName)
+            self.getImageFromArray(img)
+
+        elif value == 'Prewitt ED':
+            img = backend.prewitt(self.fileName)
+            self.getImageFromArray(img)
+            
+        elif value == 'Canny ED':
+            pass
+        
                 
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -176,7 +243,7 @@ class Ui_MainWindow(object):
         
         self.comboBox.addItems(['Tab to select','Average Filter','Gaussian Filter', 'Median Filter'])
         self.comboBox.addItems(['Uniform Noise','Gaussian Noise', 'Salt & Pepper Noise'])
-        self.comboBox.addItems(['Sobel ED','Prewitt ED', 'Prewitt ED', 'Canny ED'])
+        self.comboBox.addItems(['Sobel ED','Roberts ED', 'Prewitt ED', 'Canny ED'])
         self.comboBox.setEnabled(False)
 
         
@@ -184,6 +251,9 @@ class Ui_MainWindow(object):
 
         self.comboBox.currentTextChanged.connect(self.combo_selection)
         self.pushButton_filters_load.clicked.connect(self.filters_load_btn)
+        self.pushButton_histograms_load.clicked.connect(self.histogram_load_btn)
+        self.pushButton_histograms_load_2.clicked.connect(self.load_image_A_hybrid)
+        self.pushButton_histograms_load_3.clicked.connect(self.load_image_B_hybrid)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
