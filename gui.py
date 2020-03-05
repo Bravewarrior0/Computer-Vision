@@ -14,13 +14,45 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self,parent=None):
         super(ApplicationWindow, self).__init__(parent) 
         self.setupUi(self)
+
+        self.low = self.doubleSpinBox_low.value()
+        self.filterSize = self.spinBox_filter_size.value()
+        self.mu = self.doubleSpinBox_mu.value()
+        self.sigma = self.doubleSpinBox_sigma.value()
+
+
         self.comboBox_filters.currentTextChanged.connect(self.combo_selection)
         self.pushButton_filters_load.clicked.connect(self.filters_load_btn) 
         self.pushButton_histograms_load.clicked.connect(self.histo_load_btn)
         self.pushButton_histograms_load_2.clicked.connect(self.imgA_load_btn)
         self.pushButton_histograms_load_3.clicked.connect(self.imgB_load_btn)
         self.pushButton_histograms_load_4.clicked.connect(self.hybrid)
-        
+        self.doubleSpinBox_low.valueChanged.connect(self.saltNpepperValue)
+        self.spinBox_filter_size.valueChanged.connect(self.FilterSize)
+        self.doubleSpinBox_sigma.valueChanged.connect(self.sigma)
+        self.doubleSpinBox_mu.valueChanged.connect(self.mu)
+
+    def mu(self):
+        self.mu = self.doubleSpinBox_mu.value()
+        self.gaussiaNoise()
+    def sigma(self):
+        self.sigma = self.doubleSpinBox_sigma.value()
+        if self.comboBox_filters.currentText() == 'Gaussian noise':
+            self.gaussiaNoise()
+        if self.comboBox_filters.currentText() == 'Gaussian filter':
+            self.gaussianFilter()         
+    def saltNpepperValue(self):
+        self.low = self.doubleSpinBox_low.value()
+        if self.comboBox_filters.currentText() == 'Salt & pepper noise':
+            self.saltNpepper()
+    def FilterSize(self):
+        self.filterSize = self.spinBox_filter_size.value()
+        if self.comboBox_filters.currentText() == 'Median filter':
+            self.medianFilter()  
+        if self.comboBox_filters.currentText() == 'Average filter':  
+            self.averageFilter()
+        if self.comboBox_filters.currentText() == 'Gaussian filter': 
+            self.gaussianFilter()  
 
     def hybrid(self):
         self.outlabel = self.label_histograms_output_2
@@ -75,32 +107,29 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         pixmap = QPixmap.fromImage(qimg)
         pixmap = pixmap.scaled(outlabel.width(),outlabel.height(), QtCore.Qt.KeepAspectRatio)
         outlabel.setPixmap(pixmap)
+    
 
     def combo_selection(self):
         value = self.comboBox_filters.currentText()
         if value == 'Average filter':
-            img = backend.average_filter(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+           self.averageFilter()
 
         elif value == 'Gaussian filter':
             img = backend.img_gaussian_filter(self.fileName)
             self.getImageFromArray(img,self.label_filters_output)
 
         elif value == 'Median filter':
-            img = backend.median_filter(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+            self.medianFilter()
 
         elif value == 'Uniform noise':
             img = backend.uniformNoise(self.fileName)
             self.getImageFromArray(img,self.label_filters_output)
     
         elif value == 'Gaussian noise':
-            img = backend.add_gaussian_noise(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+            self.gaussiaNoise()
 
         elif value == 'Salt & pepper noise':
-            img = backend.saltNpepper(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)  
+           self.saltNpepper()
 
         elif value == 'Sobel ED':
             img = backend.sobel(self.fileName)
@@ -117,7 +146,21 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif value == 'Canny ED':
             pass    
 
-
+    def saltNpepper (self):
+        img = backend.saltNpepper(self.fileName, self.low)
+        self.getImageFromArray(img,self.label_filters_output)  
+    def medianFilter(self):
+        img = backend.median_filter(self.fileName,self.filterSize)
+        self.getImageFromArray(img,self.label_filters_output)  
+    def gaussiaNoise(self):
+        img = backend.add_gaussian_noise(self.mu,self.sigma,self.fileName)
+        self.getImageFromArray(img,self.label_filters_output)   
+    def averageFilter(self):
+        img = backend.average_filter(self.fileName,self.filterSize)
+        self.getImageFromArray(img,self.label_filters_output)     
+    def gaussianFilter(self):
+        img = backend.img_gaussian_filter(self.fileName,self.filterSize,self.sigma)
+        self.getImageFromArray(img,self.label_filters_output)
 def main():
     app = QtWidgets.QApplication(sys.argv)
     application = ApplicationWindow()
