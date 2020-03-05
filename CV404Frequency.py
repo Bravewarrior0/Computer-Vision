@@ -44,3 +44,55 @@ def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp1'):
     low = filters.padding_img(alpha*low, high.shape)
     out = (filters.img_map(low+high))
     return out
+
+
+def highPassFilter (img):
+
+    img_float32 = np.float32(img)
+
+    dft = cv2.dft(np.float32(img_float32), flags=cv2.DFT_COMPLEX_OUTPUT)
+    dft_shift = np.fft.fftshift(dft)
+
+    rows, cols = img.shape
+    crow, ccol = int(rows / 2), int(cols / 2) 
+
+    mask = np.ones((rows, cols, 2), np.uint8)
+    mask[crow-30:crow+30, ccol-30:ccol+30] = 0
+
+
+    fshift = dft_shift * mask
+
+    # fshift_mask_mag = 2000 * np.log(cv2.magnitude(fshift[:, :, 0], fshift[:, :, 1]))
+
+    f_ishift = np.fft.ifftshift(fshift)
+    highPassFilter_img = cv2.idft(f_ishift)
+    highPassFilter_img = cv2.magnitude(highPassFilter_img[:, :, 0], highPassFilter_img[:, :, 1])
+
+
+    cv2.normalize(highPassFilter_img, highPassFilter_img, 0, 1, cv.NORM_MINMAX) 
+
+    return highPassFilter_img
+
+
+def lowPassFilter(img):
+
+    img_float32 = np.float32(img)
+
+    dft = cv2.dft(np.float32(img_float32), flags=cv2.DFT_COMPLEX_OUTPUT)
+    dft_shift = np.fft.fftshift(dft)
+
+    rows, cols = img.shape
+    crow, ccol = int(rows / 2), int(cols / 2)
+
+    mask = np.zeros((rows, cols, 2), np.uint8)
+    mask[crow-30:crow+30, ccol-30:ccol+30] = 1
+
+    fshift = dft_shift*mask
+
+    f_ishift = np.fft.ifftshift(fshift)
+    lowPassFilter_img = cv2.idft(f_ishift)
+    lowPassFilter_img = cv2.magnitude(lowPassFilter_img[:,:,0],lowPassFilter_img[:,:,1])
+
+    cv2.normalize(lowPassFilter_img, lowPassFilter_img, 0, 1, cv2.NORM_MINMAX) 
+
+    return lowPassFilter_img

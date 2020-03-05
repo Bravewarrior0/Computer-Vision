@@ -208,3 +208,4 @@ def uniformNoise (img):
         for y in range (col):
             uniformNoise[x][y] = (random.uniform(0,255) + img[x][y]) / 2 
     return uniformNoise
+
