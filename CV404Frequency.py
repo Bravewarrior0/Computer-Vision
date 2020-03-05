@@ -1,9 +1,6 @@
 import numpy as np
 from scipy import ndimage, signal
-<<<<<<< HEAD
 #from skimage import filters
-=======
->>>>>>> 52f63e59d3b5c475e05addbf9c3b098154743d7b
 import CV404Filters as filters
 import cv2
 
