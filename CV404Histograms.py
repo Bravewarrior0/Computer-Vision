@@ -49,7 +49,7 @@ def threshold_global_auto(gray_image):
     threshold = np.sum(gray_image)/(gray_image.size)
     return 1 * ( gray_image > threshold )
 
-def threshold_local_gaussian(img, filter_size = 11, filter_type ='gaussian'):
+def threshold_local(img, filter_size = 11, filter_type ='gaussian'):
     '''
     filter_type can be 'gaussian', 'average', 'median'
     '''
