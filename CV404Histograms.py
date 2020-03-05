@@ -1,4 +1,6 @@
 import numpy as np
+import CV404Filters as filters
+
 def histogram(img):
     row, col = img.shape
     histo = {}
@@ -46,3 +48,16 @@ def threshold_global(gray_image , threshold ):
 def threshold_global_auto(gray_image):
     threshold = np.sum(gray_image)/(gray_image.size)
     return 1 * ( gray_image > threshold )
+
+def threshold_local_gaussian(img, filter_size = 11, filter_type ='gaussian'):
+    '''
+    filter_type can be 'gaussian', 'average', 'median'
+    '''
+    thershold_img = None
+    if(filter_type is 'average'):
+        thershold_img  = filters.average_filter(img,filter_size)
+    elif(filter_type is 'median'):
+        thershold_img = filters.median_filter(img, filter_size)
+    else:
+        thershold_img = filters.img_gaussian_filter(img, filter_size)
+    return img > thershold_img
