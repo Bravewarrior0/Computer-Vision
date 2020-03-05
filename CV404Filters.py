@@ -51,12 +51,6 @@ def img_map(img):
 # -------------------------------------------------
 # ----------------- filters -----------------------
 # -------------------------------------------------
-def add_gaussian_noise(mu, sigma, img):
-    #add randam Gaussian noise to the img
-    gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)
-    img_with_gaussian_noise = img + gaussian_noise
-    return img_with_gaussian_noise
-
 def gaussian_filter(shape = 3, sigma ='auto'):
     # generate gaussian kernal
     shape = make_odd(shape)
@@ -162,12 +156,22 @@ def median_filter(img, filter_size):
 
     return filtered
 
+def average_filter(img, filter_size = 3):
+    filter_size = make_odd(filter_size)
+    kernal = np.ones((filter_size,filter_size))/(filter_size**2)
+    return convolve_img(img,kernal)
 # -------------------------------------------------
 # ------------------- Noise -----------------------
 # -------------------------------------------------
 def generate_gaussian_noise( mu, sigma, img_size ):
     #generrate random Gaussian noise array 
     return np.random.normal( mu, sigma, img_size)
+
+def add_gaussian_noise(mu, sigma, img):
+    #add randam Gaussian noise to the img
+    gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)
+    img_with_gaussian_noise = img + gaussian_noise
+    return img_with_gaussian_noise
 
 def saltNpepper(img, low):
     high = 1-low
