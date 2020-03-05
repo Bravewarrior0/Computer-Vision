@@ -62,8 +62,8 @@ def add_gaussian_noise(mu, sigma, img):
 def gaussian_filter(shape = 3, sigma ='auto'):
     # generate gaussian kernal
     shape = make_odd(shape)
-    [m,n] = shape//2
-    filter = np.zeros(shape)
+    m = n = shape//2
+    filter = np.zeros((shape,shape))
     if sigma is 'auto':
         sigma = sigma=np.sqrt(2*m+1)
     for x in range (-m, m+1):
@@ -90,6 +90,30 @@ def roberts_H_edge_detection(img):
 def roberts_V_edge_detection(img):
     ROBERTS_V_MASK= np.array([[0,1],[-1,0]])
     return signal.convolve2d(img,ROBERTS_V_MASK,mode='valid')
+
+def laplacian_of_gaussian (shape = 3, sigma='auto'):
+    shape = make_odd(shape)
+    m= n = shape//2
+    filter = np.zeros((shape, shape))
+    if sigma is 'auto':
+        sigma = np.sqrt(2*m+1)
+    for x in range (-m, m+1):
+        for y in range (-m, m+1):
+            val = -(x**2 + y**2)/(2*sigma**2)
+            filter[x+m, y+m] =np.exp(val)*(1+val)/(-1*np.pi*(sigma**4))
+    return filter
+def img_laplacian_of_gaussian(img, shape = 3, sigma='auto'):
+    kernal = laplacian_of_gaussian(shape,sigma)
+    return convolve_img(img,kernal)
+
+def img_laplacian_filter(img):
+    kernal = [[1,1,1],[1,-8,1],[1,1,1]]
+    out = img_map(convolve_img(img, kernal))
+    return  out
+
+def laplacian_using_gaussian(img,shape = 3, sigma='auto'):
+    filter = img_gaussian_filter(img,shape, sigma)
+    return img - filter
 
 def prewitt(img):
     vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
