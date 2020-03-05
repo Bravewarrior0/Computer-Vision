@@ -23,6 +23,18 @@ def convolve_img (img, kernal):
     elif len(img.shape) == 2:
         return signal.convolve2d(img,kernal,mode='same')
 
+def padding_img(img,size =[0,0]):
+    size = np.asarray(size)
+    if(img.shape[0]>size[0]):
+        size[0] = img.shape[0]
+    if(img.shape[1]>size[1]):
+        size[1] = img.shape[1]
+    out = np.zeros(size)
+    x_offset = np.abs(size[0]-img.shape[0])//2
+    y_offset = np.abs(size[1]-img.shape[1])//2
+    out[x_offset:img.shape[0]+x_offset,y_offset:img.shape[1]+y_offset] = img
+    return out
+
 def img_map_gray(img):
     if(img.min()<0):
         img-=img.min()
@@ -82,27 +94,26 @@ def roberts_V_edge_detection(img):
 def prewitt(img):
     vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
     horizontal = vertical.transpose()
-    hGrad = signal.convolve2d(img, horizontal)
-    vGrad = signal.convolve2d(img, vertical)
+    hGrad = convolve_img(img, horizontal)
+    vGrad = convolve_img(img, vertical)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
-    direction = np.arctan2(vGrad, hGrad)
-    magnitude /= np.max(magnitude)
-    hGrad /= np.max(hGrad)
-    vGrad /= np.max(vGrad)
-    return magnitude
+    # direction = np.arctan2(vGrad, hGrad)
+    # magnitude /= np.max(magnitude)
+    # hGrad /= np.max(hGrad)
+    # vGrad /= np.max(vGrad)
+    return img_map(magnitude)
 
 def sobel(img):
     vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
     horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
-    hGrad = signal.convolve2d(img, horizontal)
-    vGrad = signal.convolve2d(img, vertical)
+    hGrad = convolve_img(img, horizontal)
+    vGrad = convolve_img(img, vertical)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
-    direction = np.arctan2(vGrad, hGrad)
-    magnitude /= np.max(magnitude)
-    hGrad /= np.max(hGrad)
-    vGrad /= np.max(vGrad)
-    return magnitude
-
+    # direction = np.arctan2(vGrad, hGrad)
+    # magnitude /= np.max(magnitude)
+    # hGrad /= np.max(hGrad)
+    # vGrad /= np.max(vGrad)
+    return img_map(magnitude)
 
 def median_filter(img, filter_size):
     index = filter_size // 2
