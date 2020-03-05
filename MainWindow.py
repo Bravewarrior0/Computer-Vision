@@ -51,6 +51,7 @@ class Ui_MainWindow(object):
         self.comboBox_filters.addItem("")
         self.comboBox_filters.addItem("")
         self.comboBox_filters.addItem("")
+        self.comboBox_filters.setEnabled(False)
         self.horizontalLayout.addWidget(self.comboBox_filters)
         self.groupBox_2 = QtWidgets.QGroupBox(self.groupBox)
         self.groupBox_2.setGeometry(QtCore.QRect(390, 20, 371, 111))
@@ -316,6 +317,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

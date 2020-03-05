@@ -2,10 +2,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from scipy import ndimage, signal
-from skimage import filters
+#from skimage import filters
 import CV404Filters as filters
+import cv2
 
-def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp2'):
+def rgb2gray(rgb_image):
+    # convert RGB img to grayScale img
+    return np.dot(rgb_image[...,:3], [0.299, 0.587, 0.114])
+
+def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp1'):
     '''
     img1 : Low pass filter
     img2: High pass filter
