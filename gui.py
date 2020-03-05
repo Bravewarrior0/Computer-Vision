@@ -29,13 +29,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_histograms_load_4.clicked.connect(self.hybrid)
         self.doubleSpinBox_low.valueChanged.connect(self.saltNpepperValue)
         self.spinBox_filter_size.valueChanged.connect(self.FilterSize)
-        self.doubleSpinBox_sigma.valueChanged.connect(self.sigma)
-        self.doubleSpinBox_mu.valueChanged.connect(self.mu)
+        self.doubleSpinBox_sigma.valueChanged.connect(self.sigmaFun)
+        self.doubleSpinBox_mu.valueChanged.connect(self.muFun)
 
-    def mu(self):
+    def muFun(self):
         self.mu = self.doubleSpinBox_mu.value()
         self.gaussiaNoise()
-    def sigma(self):
+    def sigmaFun(self):
         self.sigma = self.doubleSpinBox_sigma.value()
         if self.comboBox_filters.currentText() == 'Gaussian noise':
             self.gaussiaNoise()
