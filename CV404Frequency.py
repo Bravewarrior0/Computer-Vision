@@ -1,8 +1,5 @@
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 from scipy import ndimage, signal
-from skimage import filters
 import CV404Filters as filters
 import cv2 as cv
 

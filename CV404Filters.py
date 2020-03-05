@@ -4,7 +4,7 @@ import matplotlib.image as mpimg
 from scipy import ndimage, signal
 from skimage import filters
 import random 
-
+import cv2 as cv
 
 def rgb2gray(rgb_image):
     # convert RGB img to grayScale img
@@ -119,16 +119,20 @@ def prewitt(img):
     # vGrad /= np.max(vGrad)
     return img_map(magnitude)
 
-def sobel(img):
+def sobel1(img):
     vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
     horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
     hGrad = convolve_img(img, horizontal)
     vGrad = convolve_img(img, vertical)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
-    # direction = np.arctan2(vGrad, hGrad)
-    # magnitude /= np.max(magnitude)
+    direction = np.arctan2(vGrad, hGrad)
+    magnitude /= np.max(magnitude)
     # hGrad /= np.max(hGrad)
     # vGrad /= np.max(vGrad)
+    return magnitude , direction
+
+def sobel(img):
+    magnitude , direction = sobel1(img)
     return img_map(magnitude)
 
 def canny(img):
