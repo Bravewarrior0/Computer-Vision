@@ -2,8 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from scipy import ndimage, signal
-from skimage import filters
+#from skimage import filters
 import random 
+import cv2
 
 
 def rgb2gray(rgb_image):
@@ -109,6 +110,8 @@ def median_filter(img, filter_size):
 
 
 def saltNpepper(img, low):
+    img = cv2.imread(img)
+    img = rgb2gray(img)
     high = 1-low
     output = np.zeros(img.shape, np.uint8)
     row, col = img.shape
