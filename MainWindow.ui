@@ -39,7 +39,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab_filters">
      <attribute name="title">
@@ -576,7 +576,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
          <widget class="QLabel" name="label_8">
@@ -688,12 +688,12 @@
        </property>
        <item>
         <property name="text">
-         <string>Tab to select</string>
+         <string>lp1</string>
         </property>
        </item>
        <item>
         <property name="text">
-         <string>Lp1</string>
+         <string>lp2</string>
         </property>
        </item>
        <item>

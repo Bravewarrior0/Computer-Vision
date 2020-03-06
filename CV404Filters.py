@@ -66,14 +66,10 @@ def gaussian_filter(shape = 3, sigma ='auto'):
     return filter
 
 def img_gaussian_filter(img, shape= 3, sigma='auto'):
-    # img = cv2.imread(img)
-    # img = rgb2gray(img)
     kernal = gaussian_filter(shape, sigma)
     return convolve_img(img,kernal)
 
 def roberts_edge_detection(img):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
     # output = np.sqrt(roberts_H_edge_detection(img)**2 + roberts_V_edge_detection(img)**2)
     # it gives the same output but it should be faster
     output = np.abs(roberts_H_edge_detection(img))+np.abs(roberts_V_edge_detection(img))
@@ -103,8 +99,6 @@ def img_laplacian_of_gaussian(img, shape = 3, sigma='auto'):
     return convolve_img(img,kernal)
 
 def img_laplacian_filter(img):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
     kernal = [[1,1,1],[1,-8,1],[1,1,1]]
     out = img_map(convolve_img(img, kernal))
     return  out
@@ -114,8 +108,7 @@ def laplacian_using_gaussian(img,shape = 3, sigma='auto'):
     return img - filter
 
 def prewitt(img):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
+   
     vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
     horizontal = vertical.transpose()
     hGrad = convolve_img(img, horizontal)
@@ -123,9 +116,6 @@ def prewitt(img):
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
     return img_map(magnitude)
 
-# def sobel(img):
-#     img = cv2.imread(img)
-#     img = rgb2gray(img)
 def sobel1(img):
     vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
     horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
@@ -134,19 +124,14 @@ def sobel1(img):
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
     direction = np.arctan2(vGrad, hGrad)
     magnitude /= np.max(magnitude)
-    # hGrad /= np.max(hGrad)
-    # vGrad /= np.max(vGrad)
     return img_map(magnitude) , direction
 
 def sobel(img):
-    # img = cv2.imread(img)
-    # img = rgb2gray(img)
     magnitude , direction = sobel1(img)
     return magnitude
 
 def median_filter(img, filter_size=3):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
+    
     index = filter_size // 2
     filtered = np.zeros(img.shape, np.uint8)
 
@@ -172,8 +157,6 @@ def median_filter(img, filter_size=3):
     return filtered
 
 def average_filter(img, filter_size = 3):
-    # img = cv2.imread(img)
-    # img = rgb2gray(img)
     filter_size = make_odd(filter_size)
     kernal = np.ones((filter_size,filter_size))/(filter_size**2)
     return convolve_img(img,kernal)
@@ -185,16 +168,13 @@ def generate_gaussian_noise( mu, sigma, img_size ):
     return np.random.normal( mu, sigma, img_size)
 
 def add_gaussian_noise(mu, sigma, img):
-    img = mpimg.imread(img)
-    img = rgb2gray(img)
+   
     #add randam Gaussian noise to the img
     gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)
     img_with_gaussian_noise = img + gaussian_noise
     return img_with_gaussian_noise
 
 def saltNpepper(img, low=.02):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
     high = 1-low
     output = np.zeros(img.shape, np.uint8)
     row, col = img.shape
@@ -211,8 +191,6 @@ def saltNpepper(img, low=.02):
 
 
 def uniformNoise (img):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
     uniformNoise = np.zeros(img.shape, np.uint8)
     row, col = img.shape
     for x in range (row):
