@@ -13,6 +13,13 @@ import matplotlib.image as mpimg
 import Canny
 import numpy as np
 import cv2
+import matplotlib.pyplot as plt
+
+from matplotlib.backends.backend_qt5agg import (
+    FigureCanvas,
+    NavigationToolbar2QT as NavigationToolbar,
+)
+from matplotlib.figure import Figure
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -129,6 +136,15 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         except Exception as err:
             print(err)
+    def equalization_histograms(self):
+        bins = np.arange(256) 
+        img = self.getGrayImage(self.histo_fileName)
+        histoNormal = hg.histogram(img)
+        equalized_array = hg.equalization(img)
+        histoEqualized = hg.histogram(equalized_array)
+        self.getImageFromArray(equalized_array, self.label_histograms_output)
+        
+
 
     def histo_load_btn(self):
         try:
@@ -139,6 +155,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pixmap = pixmap.scaled(self.label_histograms_input.width(
             ), self.label_histograms_input.height(), QtCore.Qt.KeepAspectRatio)
             self.label_histograms_input.setPixmap(pixmap)
+            self.equalization_histograms()
 
         except Exception as err:
             print(err)
