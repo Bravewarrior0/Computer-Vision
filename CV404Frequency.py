@@ -24,6 +24,8 @@ def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp2'):
     '''
     if(0 >=alpha >=1):
         alpha =0.5
+    img1 = cv2.imread(img1)
+    img1 = rgb2gray(img1)
     low = filters.img_gaussian_filter(img1,shape)
     high = None
     if(filterType is 'lp1'):
