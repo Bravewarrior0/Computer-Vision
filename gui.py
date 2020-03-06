@@ -11,7 +11,8 @@ import qimage2ndarray
 from functools import partial
 import matplotlib.image as mpimg
 import Canny
-
+import numpy as np
+import cv2
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -66,7 +67,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def muFun(self):
         value = self.comboBox_filters.currentText()
         self.mu = self.doubleSpinBox_mu.value()
-        if  value == 'Gaussian noise':
+        if value == 'Gaussian noise':
             self.gaussiaNoise()
 
     def sigmaFun(self):
@@ -184,7 +185,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.thershold_filter_type = self.comboBox_thersholding_filter.currentText()
 
     def hybrid(self):
-        hybrid_img = freq.hybrid(self.hyb1, self.hyb2, self.alpha,13,self.effect)
+        hybrid_img = freq.hybrid(self.hyb1, self.hyb2,
+                                 self.alpha, 13, self.effect)
         self.getImageFromArray(hybrid_img, self.label_histograms_output_2)
 
     def Lpass(self):
@@ -300,7 +302,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def laplacianGaussian(self):
         img = self.getGrayImage(self.fileName)
-        img = backend.img_laplacian_of_gaussian(img, self.filterSize, self.sigma)
+        img = backend.img_laplacian_of_gaussian(
+            img, self.filterSize, self.sigma)
         self.getImageFromArray(img, self.label_filters_output)
 
     def laplacian2(self):
@@ -318,9 +321,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         return img
 
     def getGrayImage(self, path):
-        img = mpimg.imread(path)
-        img = backend.rgb2gray(img)
-        return img
+        #img = backend.rgb2gray(mpimg.imread(path))
+        return backend.rgb2gray(cv2.imread(path)).astype(np.uint8)
 
     def getImageFromArray(self, array, outlabel):
         qimg = qimage2ndarray.array2qimage(array, normalize=True)
