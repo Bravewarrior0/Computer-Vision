@@ -42,6 +42,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.doubleSpinBox_mu.valueChanged.connect(self.muFun)
         self.doubleSpinBox_alpha.valueChanged.connect(self.alphaFun)
         self.doubleSpinBox_Thershold_value.valueChanged.connect(self.changeThersholdValue)
+        self.pushButton_frequency_load.clicked.connect(self.frequency_load)
+        self.comboBox_pass_filter.currentTextChanged.connect(self.combo_pass_filter)
     def alphaFun(self):
         self.alpha= self.doubleSpinBox_alpha.value()
         self.hybrid()
@@ -67,10 +69,16 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         if self.comboBox_filters.currentText() == 'Gaussian filter': 
             self.gaussianFilter()  
 
-    def hybrid(self):
-        hybrid_img = freq.hybrid(self.hyb1, self.hyb2, self.alpha)
-        self.getImageFromArray(hybrid_img,self.label_histograms_output_2)
-        
+    def frequency_load(self):
+        try:
+            options = QFileDialog.Options()
+            self.freq, _ = QFileDialog.getOpenFileName(None, 'Upload Image', '', '*.png *.jpg *.jpeg',options=options)
+            pixmap = QPixmap(self.freq)
+            pixmap = pixmap.scaled(self.label_pass_input.width(),self.label_pass_input.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_pass_input.setPixmap(pixmap)
+            self.label_pass_output.clear()
+        except Exception as err:
+            print(err)      
     def imgB_load_btn(self):
         try:
             options = QFileDialog.Options()
@@ -112,6 +120,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.label_filters_output.clear()
         except Exception as err:
             print(err)
+    
     def autoGlobalThershold_btn(self):
         img = self.getGrayImage(self.histo_fileName)
         thersholdImg = hg.threshold_global_auto(img)
@@ -133,12 +142,26 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def changeThersholdFilterType(self):
         self.thershold_filter_type = self.comboBox_thersholding_filter.currentText()
 
-    def getImageFromArray(self,array,outlabel):
-        qimg = qimage2ndarray.array2qimage(array, normalize=True)
-        pixmap = QPixmap.fromImage(qimg)
-        pixmap = pixmap.scaled(outlabel.width(),outlabel.height(), QtCore.Qt.KeepAspectRatio)
-        outlabel.setPixmap(pixmap)
+   
     
+    def hybrid(self):
+        hybrid_img = freq.hybrid(self.hyb1, self.hyb2, self.alpha)
+        self.getImageFromArray(hybrid_img,self.label_histograms_output_2)
+    def Lpass(self):
+        img_array = freq.lowPassFilter(self.getGrayImage(self.freq))
+        self.getImageFromArray(img_array,self.label_pass_output)
+    def Hpass(self):
+        img_array = freq.highPassFilter(self.getGrayImage(self.freq))
+        self.getImageFromArray(img_array,self.label_pass_output) 
+    def combo_pass_filter(self):
+        value = self.comboBox_pass_filter.currentText()        
+        if value == 'Low pass':
+            self.Lpass()
+        elif value == 'High pass':
+            self.Hpass()
+        elif value == 'Tab to select':       
+            self.label_pass_output.clear()
+       
 
     def combo_selection(self):
         value = self.comboBox_filters.currentText()
@@ -152,8 +175,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.medianFilter()
 
         elif value == 'Uniform noise':
-            img = backend.uniformNoise(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+            self.uniformNoise()
     
         elif value == 'Gaussian noise':
             self.gaussiaNoise()
@@ -162,22 +184,16 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
            self.saltNpepper()
 
         elif value == 'Sobel ED':
-            img = self.getGrayImage(self.fileName)
-            img = backend.sobel(img)
-            self.getImageFromArray(img,self.label_filters_output)
+            self.sobelED()
 
         elif value == 'Roberts ED':
-            img = backend.roberts_edge_detection(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+           self.robertsED()
 
         elif value == 'Prewitt ED':
-            img = backend.prewitt(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+           self.prewittED()
 
         elif value == 'Canny ED':
-            img = self.getGrayImage(self.fileName)
-            img = Canny.canny(img)
-            self.getImageFromArray(img,self.label_filters_output)  
+            self.cannyED()  
 
         elif value == 'Laplacian2':
             img = self.getGrayImage(self.fileName)*255
@@ -187,7 +203,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         elif value == 'Laplacian1':
             img = backend.img_laplacian_filter(self.fileName)
             self.getImageFromArray(img,self.label_filters_output)
-           
+        elif value == "Tab to Select" :
+             self.label_filters_output.clear()    
          
     def saltNpepper (self):
         img = backend.saltNpepper(self.fileName, self.low)
@@ -206,7 +223,25 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         img = self.getImage(self.fileName)
         img = backend.img_gaussian_filter(img,self.filterSize,self.sigma)
         self.getImageFromArray(img,self.label_filters_output)
-
+    def prewittED(self):
+        img = backend.prewitt(self.fileName)
+        self.getImageFromArray(img,self.label_filters_output)
+    def robertsED(self):
+        img = backend.roberts_edge_detection(self.fileName)
+        self.getImageFromArray(img,self.label_filters_output)
+    def uniformNoise(self):
+        img = backend.uniformNoise(self.fileName)
+        self.getImageFromArray(img,self.label_filters_output)        
+    def cannyED(self):
+        img = self.getGrayImage(self.fileName)
+        img = Canny.canny(img)
+        self.getImageFromArray(img,self.label_filters_output)
+    
+    def sobelED(self):
+        img = self.getGrayImage(self.fileName)
+        img = backend.sobel(img)
+        self.getImageFromArray(img,self.label_filters_output)
+    
     def getImage(self,path):
         img = mpimg.imread(path)
         return img
@@ -214,7 +249,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         img = mpimg.imread(path)
         img= backend.rgb2gray(img)
         return img
-
+    def getImageFromArray(self,array,outlabel):
+        qimg = qimage2ndarray.array2qimage(array, normalize=True)
+        pixmap = QPixmap.fromImage(qimg)
+        pixmap = pixmap.scaled(outlabel.width(),outlabel.height(), QtCore.Qt.KeepAspectRatio)
+        outlabel.setPixmap(pixmap)
 def main():
     app = QtWidgets.QApplication(sys.argv)
     application = ApplicationWindow()
