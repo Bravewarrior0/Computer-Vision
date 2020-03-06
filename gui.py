@@ -10,7 +10,7 @@ from qtpy.QtGui import QPixmap
 import qimage2ndarray
 from functools import partial
 import matplotlib.image as mpimg
-
+import Canny
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self,parent=None):
         super(ApplicationWindow, self).__init__(parent) 
@@ -162,7 +162,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
            self.saltNpepper()
 
         elif value == 'Sobel ED':
-            img = backend.sobel(self.fileName)
+            img = self.getGrayImage(self.fileName)
+            img = backend.sobel(img)
             self.getImageFromArray(img,self.label_filters_output)
 
         elif value == 'Roberts ED':
@@ -174,7 +175,19 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.getImageFromArray(img,self.label_filters_output)
 
         elif value == 'Canny ED':
-            pass    
+            img = self.getGrayImage(self.fileName)
+            img = Canny.canny(img)
+            self.getImageFromArray(img,self.label_filters_output)  
+
+        elif value == 'Laplacian2':
+            img = self.getGrayImage(self.fileName)*255
+            img = backend.laplacian_using_gaussian(img,self.filterSize)
+            self.getImageFromArray(img,self.label_filters_output)
+
+        elif value == 'Laplacian1':
+            img = backend.img_laplacian_filter(self.fileName)
+            self.getImageFromArray(img,self.label_filters_output)
+           
          
     def saltNpepper (self):
         img = backend.saltNpepper(self.fileName, self.low)

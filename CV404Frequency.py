@@ -72,7 +72,7 @@ def highPassFilter (img):
     highPassFilter_img = cv2.magnitude(highPassFilter_img[:, :, 0], highPassFilter_img[:, :, 1])
 
 
-    cv2.normalize(highPassFilter_img, highPassFilter_img, 0, 1, cv.NORM_MINMAX) 
+    cv2.normalize(highPassFilter_img, highPassFilter_img, 0, 1, cv2.NORM_MINMAX) 
 
     return highPassFilter_img
 

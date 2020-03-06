@@ -139,8 +139,8 @@ def sobel1(img):
     return img_map(magnitude) , direction
 
 def sobel(img):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
+    # img = cv2.imread(img)
+    # img = rgb2gray(img)
     magnitude , direction = sobel1(img)
     return magnitude
 
