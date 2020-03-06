@@ -1,5 +1,6 @@
 import numpy as np
-import CV404Filters as filters
+import CV404Filters as myFilters
+import cv2
 
 def histogram(img):
     row, col = img.shape
@@ -41,7 +42,7 @@ def equalization(img):
     return equalized_img
 
 # --------------thersholding----------------------------#
-def threshold_global(gray_image , threshold ):
+def threshold_global(gray_image , threshold =0.5 ):
     threshold = np.max( gray_image ) * threshold
     return 1 * ( gray_image > threshold )
 
@@ -53,11 +54,12 @@ def threshold_local(img, filter_size = 11, filter_type ='gaussian'):
     '''
     filter_type can be 'gaussian', 'average', 'median'
     '''
+    filter_type = filter_type.lower()
     thershold_img = None
-    if(filter_type is 'average'):
-        thershold_img  = filters.average_filter(img,filter_size)
-    elif(filter_type is 'median'):
-        thershold_img = filters.median_filter(img, filter_size)
+    if(filter_type == 'average'):
+        thershold_img  = myFilters.average_filter(img,filter_size)
+    # elif(filter_type is 'median'):
+    #     thershold_img = myFilters.median_filter(img, filter_size)
     else:
-        thershold_img = filters.img_gaussian_filter(img, filter_size)
-    return img > thershold_img
+        thershold_img = myFilters.img_gaussian_filter(img, filter_size)
+    return 1*(img > thershold_img)

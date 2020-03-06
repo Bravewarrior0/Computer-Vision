@@ -66,8 +66,8 @@ def gaussian_filter(shape = 3, sigma ='auto'):
     return filter
 
 def img_gaussian_filter(img, shape= 3, sigma='auto'):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
+    # img = cv2.imread(img)
+    # img = rgb2gray(img)
     kernal = gaussian_filter(shape, sigma)
     return convolve_img(img,kernal)
 
@@ -172,8 +172,8 @@ def median_filter(img, filter_size=3):
     return filtered
 
 def average_filter(img, filter_size = 3):
-    img = cv2.imread(img)
-    img = rgb2gray(img)
+    # img = cv2.imread(img)
+    # img = rgb2gray(img)
     filter_size = make_odd(filter_size)
     kernal = np.ones((filter_size,filter_size))/(filter_size**2)
     return convolve_img(img,kernal)
@@ -185,7 +185,7 @@ def generate_gaussian_noise( mu, sigma, img_size ):
     return np.random.normal( mu, sigma, img_size)
 
 def add_gaussian_noise(mu, sigma, img):
-    img = cv2.imread(img)
+    img = mpimg.imread(img)
     img = rgb2gray(img)
     #add randam Gaussian noise to the img
     gaussian_noise= generate_gaussian_noise(mu,sigma, img.shape)

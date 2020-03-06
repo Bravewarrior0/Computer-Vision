@@ -9,6 +9,7 @@ from qtpy.QtWidgets import QFileDialog
 from qtpy.QtGui import QPixmap
 import qimage2ndarray
 from functools import partial
+import matplotlib.image as mpimg
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self,parent=None):
@@ -20,18 +21,27 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mu = self.doubleSpinBox_mu.value()
         self.sigma = self.doubleSpinBox_sigma.value()
         self.alpha = self.doubleSpinBox_alpha.value()
+        self.threshold_value = self.doubleSpinBox_Thershold_value.value()
+        self.thershlod_filter_size = self.spinBox_thershlod_filter_size.value()
+        self.thershold_filter_type = self.comboBox_thersholding_filter.currentText()
 
         self.comboBox_filters.currentTextChanged.connect(self.combo_selection)
+        self.comboBox_thersholding_filter.currentTextChanged.connect(self.changeThersholdFilterType)
         self.pushButton_filters_load.clicked.connect(self.filters_load_btn) 
         self.pushButton_histograms_load.clicked.connect(self.histo_load_btn)
         self.pushButton_histograms_load_2.clicked.connect(self.imgA_load_btn)
         self.pushButton_histograms_load_3.clicked.connect(self.imgB_load_btn)
         self.pushButton_histograms_load_4.clicked.connect(self.hybrid)
+        self.pushButton_globalThershold.clicked.connect(self.globalThershold_btn)
+        self.pushButton_Auto_global_thershold.clicked.connect(self.autoGlobalThershold_btn)
+        self.pushButton_local_thershold.clicked.connect(self.localThershold_btn)
         self.doubleSpinBox_low.valueChanged.connect(self.saltNpepperFun)
         self.spinBox_filter_size.valueChanged.connect(self.FilterSize)
+        self.spinBox_thershlod_filter_size.valueChanged.connect(self.changeThersholdFilterSize)
         self.doubleSpinBox_sigma.valueChanged.connect(self.sigmaFun)
         self.doubleSpinBox_mu.valueChanged.connect(self.muFun)
         self.doubleSpinBox_alpha.valueChanged.connect(self.alphaFun)
+        self.doubleSpinBox_Thershold_value.valueChanged.connect(self.changeThersholdValue)
     def alphaFun(self):
         self.alpha= self.doubleSpinBox_alpha.value()
         self.hybrid()
@@ -102,7 +112,26 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.label_filters_output.clear()
         except Exception as err:
             print(err)
-    
+    def autoGlobalThershold_btn(self):
+        img = self.getGrayImage(self.histo_fileName)
+        thersholdImg = hg.threshold_global_auto(img)
+        self.getImageFromArray(thersholdImg,self.label_histograms_output)
+    def globalThershold_btn(self):
+        img = self.getGrayImage(self.histo_fileName)
+        thersholdImg = hg.threshold_global(img, self.threshold_value)
+        self.getImageFromArray(thersholdImg,self.label_histograms_output)
+    def localThershold_btn(self):
+        img = self.getGrayImage(self.histo_fileName)
+        thersholdImg = hg.threshold_local(img, self.thershlod_filter_size, self.thershold_filter_type)
+        self.getImageFromArray(thersholdImg,self.label_histograms_output)
+    def changeThersholdValue(self):
+        self.threshold_value = self.doubleSpinBox_Thershold_value.value()
+        self.globalThershold_btn()
+    def changeThersholdFilterSize(self):
+        self.thershlod_filter_size = self.spinBox_thershlod_filter_size.value()
+        self.localThershold_btn()
+    def changeThersholdFilterType(self):
+        self.thershold_filter_type = self.comboBox_thersholding_filter.currentText()
 
     def getImageFromArray(self,array,outlabel):
         qimg = qimage2ndarray.array2qimage(array, normalize=True)
@@ -157,11 +186,22 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         img = backend.add_gaussian_noise(self.mu,self.sigma,self.fileName)
         self.getImageFromArray(img,self.label_filters_output)   
     def averageFilter(self):
-        img = backend.average_filter(self.fileName,self.filterSize)
+        img = self.getImage(self.fileName)
+        img = backend.average_filter(img,self.filterSize)
         self.getImageFromArray(img,self.label_filters_output)     
     def gaussianFilter(self):
-        img = backend.img_gaussian_filter(self.fileName,self.filterSize,self.sigma)
+        img = self.getImage(self.fileName)
+        img = backend.img_gaussian_filter(img,self.filterSize,self.sigma)
         self.getImageFromArray(img,self.label_filters_output)
+
+    def getImage(self,path):
+        img = mpimg.imread(path)
+        return img
+    def getGrayImage(self,path):
+        img = mpimg.imread(path)
+        img= backend.rgb2gray(img)
+        return img
+
 def main():
     app = QtWidgets.QApplication(sys.argv)
     application = ApplicationWindow()

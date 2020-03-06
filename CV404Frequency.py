@@ -35,9 +35,9 @@ def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp2'):
     elif(filterType is 'roberts'):
         high = filters.roberts_edge_detection(img2)
     else:
-        gaussain = filters.img_gaussian_filter(img2,shape)
         img2 = cv2.imread(img2)
         img2 = rgb2gray(img2)
+        gaussain = filters.img_gaussian_filter(img2,shape)
         high = img2 - gaussain
     high = filters.img_map(high)
     low = filters.img_map(low)
