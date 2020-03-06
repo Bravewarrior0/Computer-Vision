@@ -3,43 +3,32 @@ import CV404Filters as myFilters
 import cv2
 
 def histogram(img):
-    row, col = img.shape
-    histo = {}
-    for i in range(row):
-        for j in range(col):
-            histo[img[i, j]] = histo.get(img[i, j], 0)+1
-
-    sortedHisto = sorted(histo.items())          
-    return histo,sortedHisto
+    img = img.flatten()
+    histo = np.zeros(256, np.uint8)
+    for i in range(len(img)):
+            histo[img[i]] += 1
+    return histo
 
 def equalization(img):
-    equalized_img = img
-    histo,sortedHisto = histogram(img)
-    row = img.shape[0]
-    col =img.shape[1]
-    total_num = row*col 
+    equalized_img = img.flatten()
+    img_histo = histogram(img)
+    total_num = img.size
     lvl =255
-    pdf = {}
-    cdf = {}
-    roundoff={}
-    equalized={}
-    for i in range(len(sortedHisto)):
-        pdf[sortedHisto[i][0]] = sortedHisto[i][1]/total_num
-    for j in range(len(pdf)):
-        if j ==0:
-            cdf[sortedHisto[0][0]] = pdf[sortedHisto[0][0]]
-        else:    
-            cdf[sortedHisto[j][0]] =  cdf[sortedHisto[j-1][0]]  + pdf[sortedHisto[j][0]] 
-    roundoff = cdf
-    for key in roundoff:
-        roundoff[key] = round(roundoff[key]*lvl)
-        equalized[roundoff[key]] = equalized.get(roundoff[key],0)+ histo[key]
+    pdf = np.zeros(256, np.float)
+    cdf = np.zeros(256, np.float)
+    rounded=np.zeros(256, np.uint8)
+    equalized= np.zeros(256, np.uint8)
+    for i in range(len(pdf)):
+        pdf[i] = img_histo[i]/total_num
 
-    for i in range(row):
-        for j in range(col):
-                equalized_img[i,j] = roundoff[equalized_img[i,j]]
+    cdf = np.cumsum(pdf)
+    for j in range (len(cdf)):
+        rounded[j] = round(lvl*cdf[j]) 
+    
+    for k in range(len(rounded)):
+        equalized_img[k] = rounded[k]
 
-    return equalized_img
+    return equalized_img.reshape(len(img),len(img[0]))
 
 # --------------thersholding----------------------------#
 def threshold_global(gray_image , threshold =0.5 ):
