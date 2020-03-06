@@ -27,13 +27,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_histograms_load_2.clicked.connect(self.imgA_load_btn)
         self.pushButton_histograms_load_3.clicked.connect(self.imgB_load_btn)
         self.pushButton_histograms_load_4.clicked.connect(self.hybrid)
-        self.doubleSpinBox_low.valueChanged.connect(self.saltNpepperValue)
+        self.doubleSpinBox_low.valueChanged.connect(self.saltNpepperFun)
         self.spinBox_filter_size.valueChanged.connect(self.FilterSize)
         self.doubleSpinBox_sigma.valueChanged.connect(self.sigmaFun)
         self.doubleSpinBox_mu.valueChanged.connect(self.muFun)
         self.doubleSpinBox_alpha.valueChanged.connect(self.alphaFun)
     def alphaFun(self):
-        self.alph= self.doubleSpinBox_alpha.value()
+        self.alpha= self.doubleSpinBox_alpha.value()
         self.hybrid()
     def muFun(self):
         self.mu = self.doubleSpinBox_mu.value()
@@ -44,7 +44,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.gaussiaNoise()
         if self.comboBox_filters.currentText() == 'Gaussian filter':
             self.gaussianFilter()         
-    def saltNpepperValue(self):
+    def saltNpepperFun(self):
         self.low = self.doubleSpinBox_low.value()
         if self.comboBox_filters.currentText() == 'Salt & pepper noise':
             self.saltNpepper()
@@ -117,8 +117,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
            self.averageFilter()
 
         elif value == 'Gaussian filter':
-            img = backend.img_gaussian_filter(self.fileName)
-            self.getImageFromArray(img,self.label_filters_output)
+           self.gaussianFilter()
 
         elif value == 'Median filter':
             self.medianFilter()
@@ -147,7 +146,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         elif value == 'Canny ED':
             pass    
-
+         
     def saltNpepper (self):
         img = backend.saltNpepper(self.fileName, self.low)
         self.getImageFromArray(img,self.label_filters_output)  

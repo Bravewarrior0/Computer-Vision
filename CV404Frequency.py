@@ -8,7 +8,8 @@ def rgb2gray(rgb_image):
     # convert RGB img to grayScale img
     return np.dot(rgb_image[...,:3], [0.299, 0.587, 0.114])
 
-def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp1'):
+def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp2'):
+   
     '''
     img1 : Low pass filter
     img2: High pass filter
@@ -27,7 +28,7 @@ def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp1'):
     high = None
     if(filterType is 'lp1'):
         high = filters.img_laplacian_filter(img2)
-    elif(filterType is 'soble'):
+    elif(filterType is 'sobel'):
         high = filters.sobel(img2)
     elif(filterType is 'prewitt'):
         high = filters.prewitt(img2)
@@ -35,6 +36,8 @@ def hybrid(img1, img2, alpha =0.5,shape = 13, filterType='lp1'):
         high = filters.roberts_edge_detection(img2)
     else:
         gaussain = filters.img_gaussian_filter(img2,shape)
+        img2 = cv2.imread(img2)
+        img2 = rgb2gray(img2)
         high = img2 - gaussain
     high = filters.img_map(high)
     low = filters.img_map(low)
