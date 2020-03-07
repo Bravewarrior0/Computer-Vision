@@ -13,13 +13,9 @@ import matplotlib.image as mpimg
 import Canny
 import numpy as np
 import cv2
-import matplotlib.pyplot as plt
+from pyqtgraph import PlotWidget, plot
+import pyqtgraph as pg
 
-from matplotlib.backends.backend_qt5agg import (
-    FigureCanvas,
-    NavigationToolbar2QT as NavigationToolbar,
-)
-from matplotlib.figure import Figure
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -143,6 +139,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         equalized_array = hg.equalization(img)
         histoEqualized = hg.histogram(equalized_array)
         self.getImageFromArray(equalized_array, self.label_histograms_output)
+
+       
+        self.histo_input.setXRange(0, 256, padding=0)
+        self.histo_output.setXRange(0, 256, padding=0)
+        pen = pg.mkPen(color=(255, 0, 0))
+        pen2 = pg.mkPen(color=(0, 255, 0))
+        self.histo_input.plot(bins, histoNormal, pen=pen)
+        self.histo_output.plot(bins, histoEqualized,pen=pen2)
+
+ 
+      
         
 
 
