@@ -59,6 +59,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.combo_pass_filter)
         self.comboBox_hybrid.currentTextChanged.connect(self.hybrid_effect)
 
+    
+
+
     def hybrid_effect(self):
         self.effect = self.comboBox_pass_filter.currentText()
         self.hybrid()
@@ -133,20 +136,14 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as err:
             print(err)
     def equalization_histograms(self):
-        bins = np.arange(256) 
+        bins = np.arange(257) 
         img = self.getGrayImage(self.histo_fileName)
         histoNormal = hg.histogram(img)
         equalized_array = hg.equalization(img)
         histoEqualized = hg.histogram(equalized_array)
         self.getImageFromArray(equalized_array, self.label_histograms_output)
-
-       
-        self.histo_input.setXRange(0, 256, padding=0)
-        self.histo_output.setXRange(0, 256, padding=0)
-        pen = pg.mkPen(color=(255, 0, 0))
-        pen2 = pg.mkPen(color=(0, 255, 0))
-        self.histo_input.plot(bins, histoNormal, pen=pen)
-        self.histo_output.plot(bins, histoEqualized,pen=pen2)
+        self.histo_input.plot(bins+1, histoNormal, stepMode=True, fillLevel=0, brush='r')
+        self.histo_output.plot(bins+1, histoEqualized,stepMode=True, fillLevel=0, brush='b')
 
  
       
