@@ -58,9 +58,20 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.comboBox_pass_filter.currentTextChanged.connect(
             self.combo_pass_filter)
         self.comboBox_hybrid.currentTextChanged.connect(self.hybrid_effect)
+        self.pushButton_AC_load.clicked.connect(self.AC_load)
 
-    
+    def AC_load(self):
+        try:
+            options = QFileDialog.Options()
+            self.AC, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.AC)
+            pixmap = pixmap.scaled(self.label_AC.width(
+            ), self.label_AC.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_AC.setPixmap(pixmap)
 
+        except Exception as err:
+            print(err)
 
     def hybrid_effect(self):
         self.effect = self.comboBox_pass_filter.currentText()
@@ -135,20 +146,18 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         except Exception as err:
             print(err)
+
     def equalization_histograms(self):
-        bins = np.arange(257) 
+        bins = np.arange(257)
         img = self.getGrayImage(self.histo_fileName)
         histoNormal = hg.histogram(img)
         equalized_array = hg.equalization(img)
         histoEqualized = hg.histogram(equalized_array)
         self.getImageFromArray(equalized_array, self.label_histograms_output)
-        self.histo_input.plot(bins+1, histoNormal, stepMode=True, fillLevel=0, brush='r')
-        self.histo_output.plot(bins+1, histoEqualized,stepMode=True, fillLevel=0, brush='b')
-
- 
-      
-        
-
+        self.histo_input.plot(bins+1, histoNormal,
+                              stepMode=True, fillLevel=0, brush='r')
+        self.histo_output.plot(bins+1, histoEqualized,
+                               stepMode=True, fillLevel=0, brush='b')
 
     def histo_load_btn(self):
         try:
