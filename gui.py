@@ -4,6 +4,7 @@ import sys
 import CV404Filters as backend
 import CV404Histograms as hg
 import CV404Frequency as freq
+import CV404Harris as harrisd
 from PyQt5 import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtGui import QPixmap
