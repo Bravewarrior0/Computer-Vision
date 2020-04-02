@@ -88,14 +88,16 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.y_AC=self.center[1]+self.radius*np.sin(self.theta)
         self.x_rep_AC = ac.circ_replicate(self.x_AC)
         self.y_rep_AC = ac.circ_replicate(self.y_AC)
-        self.newContour=ac.compute_energy(self.x_rep_AC,self.y_rep_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
+        self.newContour=ac.compute_energy(self.x_AC,self.y_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
         self.drawNewCont(self.newContour)
 
     def drawNewCont(self, points):
+       
         x = points[0]
         y = points[1]
+        print (x, "++", y)
         painterN = QPainter(self.label_AC.pixmap())
-        painterN.setPen(QPen(Qt.blue,  8, Qt.DashLine))   
+        painterN.setPen(QPen(Qt.green,  1, Qt.SolidLine))   
         for i in range (len(x)):
             painterN.drawPoint(x[i], y[i])
             painterN.end()
