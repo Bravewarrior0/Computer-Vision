@@ -4,7 +4,7 @@ import sys
 import CV404Filters as backend
 import CV404Histograms as hg
 import CV404Frequency as freq
-import CV404Harris as harrisd
+import CV404Harris as harris
 from PyQt5 import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtGui import QPixmap
@@ -22,6 +22,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(ApplicationWindow, self).__init__(parent)
         self.setupUi(self)
+        self.harris_fileName = None
         self.histo_fileName = 'images\Bikesgray.jpg'
         self.low = self.doubleSpinBox_low.value()
         self.filterSize = self.spinBox_filter_size.value()
@@ -61,6 +62,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.comboBox_hybrid.currentTextChanged.connect(self.hybrid_effect)
         self.pushButton_AC_load.clicked.connect(self.AC_load)
 
+        # Harris tab
+        self.pushButton_harris_load.clicked.connect(self.harris_load_btn)
+        self.pushButton_harris_apply.clicked.connect(self.harris_apply_btn)
+        
     def AC_load(self):
         try:
             options = QFileDialog.Options()
@@ -148,6 +153,19 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as err:
             print(err)
 
+    def harris_load_btn(self):
+        try:
+            options = QFileDialog.Options()
+            self.harris_fileName, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.harris_fileName)
+            if(not pixmap.isNull()):
+                pixmap = pixmap.scaled(self.label_harris_input.width(
+                ), self.label_harris_input.height(), QtCore.Qt.KeepAspectRatio)
+                self.label_harris_input.setPixmap(pixmap)
+        except Exception as err:
+            print(err)
+
     def equalization_histograms(self,img):
         bins = np.arange(257)
         #img = self.getGrayImage(self.histo_fileName)
@@ -190,6 +208,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.label_filters_output.clear()
         except Exception as err:
             print(err)
+
+    def harris_apply_btn(self):
+        if(self.harris_fileName == None):
+            return
+        img = self.getImage(self.harris_fileName)
+        k = self.doubleSpinBox_harris_k.value()
+        w = self.spinBox_harris_w.value()
+        gaussian_size = self.spinBox_haris_gaussianSize.value()
+        thershold = self.doubleSpinBox_harris_thershold.value()
+        out = harris.get_corners(img,w,k,thershold,gaussian_size)
+        self.getImageFromArray(out, self.label_harris_output)
 
     def autoGlobalThershold_btn(self):
         img = self.getGrayImage(self.histo_fileName)

@@ -26,8 +26,8 @@ def harris_response(img, w=3,k= 0.05, gaussian_size =3):
     R = detM - k * np.multiply(traceM,traceM) # Harris response
     return R
 
-def get_corners(img,w=3, k=0.05,thershold = 0.0001):
-    R = harris_response(img,w,k)
+def get_corners(img,w=3, k=0.05,thershold = 0.0001, gaussian_size=3):
+    R = harris_response(img,w,k,gaussian_size)
     R/=np.max(R)
     img_copy = np.copy(img)
     corners = R > thershold
