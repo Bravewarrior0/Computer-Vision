@@ -865,10 +865,10 @@
      <widget class="QLabel" name="label_AC">
       <property name="geometry">
        <rect>
-        <x>230</x>
-        <y>30</y>
-        <width>801</width>
-        <height>411</height>
+        <x>400</x>
+        <y>10</y>
+        <width>461</width>
+        <height>461</height>
        </rect>
       </property>
       <property name="focusPolicy">
@@ -893,8 +893,8 @@
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>250</x>
-        <y>460</y>
+        <x>60</x>
+        <y>440</y>
         <width>231</width>
         <height>181</height>
        </rect>
@@ -963,8 +963,8 @@
      <widget class="QSplitter" name="splitter_19">
       <property name="geometry">
        <rect>
-        <x>530</x>
-        <y>480</y>
+        <x>410</x>
+        <y>500</y>
         <width>441</width>
         <height>151</height>
        </rect>
@@ -1049,8 +1049,8 @@
      <widget class="QSplitter" name="splitter_15">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>250</y>
+        <x>60</x>
+        <y>240</y>
         <width>151</width>
         <height>161</height>
        </rect>
@@ -1077,8 +1077,8 @@
      <widget class="QSplitter" name="splitter_20">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>90</y>
+        <x>60</x>
+        <y>50</y>
         <width>151</width>
         <height>121</height>
        </rect>

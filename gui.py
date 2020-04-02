@@ -21,7 +21,8 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(ApplicationWindow, self).__init__(parent)
         self.setupUi(self)
-
+        self.arr = [] 
+        self.AC =""
         self.low = self.doubleSpinBox_low.value()
         self.filterSize = self.spinBox_filter_size.value()
         self.mu = self.doubleSpinBox_mu.value()
@@ -60,19 +61,67 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.comboBox_hybrid.currentTextChanged.connect(self.hybrid_effect)
         self.pushButton_AC_load.clicked.connect(self.AC_load)
 
+    """     def paintEvent(self, paint_event):
+        painter = QtGui.QPainter(self)
+        painter.drawPixmap(self.rect(), self.AC)
+        pen = QtGui.QPen()
+        pen.setWidth(20)
+        painter.setPen(pen)
+        painter.setRenderHint(QtGui.QPainter.Antialiasing, True)
+        painter.drawPoint(300, 300)
+        painter.drawLine(100, 100, 400, 400)
+        for pos in self.chosen_points:
+            painter.drawPoint(pos)
+
+    def mouseReleaseEvent(self, cursor_event):
+        self.chosen_points.append(cursor_event.pos())
+        self.update() """
     def AC_load(self):
         try:
             options = QFileDialog.Options()
             self.AC, _ = QFileDialog.getOpenFileName(
                 None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            
             pixmap = QPixmap(self.AC)
             pixmap = pixmap.scaled(self.label_AC.width(
             ), self.label_AC.height(), QtCore.Qt.KeepAspectRatio)
             self.label_AC.setPixmap(pixmap)
+            #print(len(self.img), "++", len(self.img[0]))
+
 
         except Exception as err:
             print(err)
-
+    """ def mouseMoveEvent(self, e):
+        painter = QtGui.QPainter(self.label_AC.pixmap())
+        pen = QtGui.QPen()
+        pen.setWidth(15)
+        pen.setColor(QtGui.QColor('blue'))
+        painter.setPen(pen)
+        painter.drawPoint(e.x(), e.y())
+        print(e.x(), " || " , e.y())
+        painter.end()
+        self.update()               """
+    def mousePressEvent(self,e):
+        if self.AC != "":
+            try:
+                self.arr.append([e.x(), e.y()])
+                painter = QtGui.QPainter(self.label_AC.pixmap())
+                pen = QtGui.QPen()
+                #pen.setWidth(10)
+                pen.setColor(QtGui.QColor('blue'))
+                painter.setPen(pen)
+                painter.drawPoint(e.x(), e.y())
+                #painter.drawPoint(e.x(), e.y())
+                if len(self.arr) % 2 == 0 and len(self.arr) != 0:
+                    center = self.arr[-2]
+                    tip = self.arr[-1]
+                    self.radius = ( (center[0]- tip[0])**2 + (center[1]-tip[1])**2 )**.5
+                    painter.drawEllipse(center[0]-self.radius, center[1]-self.radius, 2*self.radius, 2*self.radius)
+                    #print(self.arr[-1][0], " || " , self.arr[-1][1])
+                painter.end()
+                self.update() 
+            except Exception as err:
+                print(err)
     def hybrid_effect(self):
         self.effect = self.comboBox_pass_filter.currentText()
         self.hybrid()
