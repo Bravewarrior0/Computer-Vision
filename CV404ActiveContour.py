@@ -38,10 +38,12 @@ def circ_replicate(array): #repeat put last as first, and first as last again (c
 def get_8neighbors(pointsX, pointsY): #
     pointsOut= np.array([[pointsX, pointsY], [pointsX-1, pointsY], [pointsX+1, pointsY],\
                          [pointsX, pointsY-1], [pointsX, pointsY+1], [pointsX-1,pointsY-1],[pointsX-1,pointsY+1],\
-                             [[pointsX+1,pointsY-1]], [pointsX+1,pointsY+1]   ] )
+                             [pointsX+1,pointsY-1], [pointsX+1,pointsY+1]   ] )
     return pointsOut
+
 def compute_energy(pointsX, pointsY, alpha, beta, gamma, grad_normalized): #compute continuity energy
-    
+    #print(pointsX)
+    #print(pointsY)
     newPointsX=np.zeros(pointsX.shape)
     newPointsY=np.zeros(pointsY.shape)    
     
@@ -52,17 +54,17 @@ def compute_energy(pointsX, pointsY, alpha, beta, gamma, grad_normalized): #comp
     distance/=(len(pointsX)-2) # average contour distance 
     
     for ind in range(1,len(pointsX)-1): #compute elastic energy VECTOR #cover all Core points
-        elas_En=np.zeros(9) # For the Current contour point and its 8-neighbors
-        curv_En=np.zeros(9) # For the Current contour point and its 8-neighbors
-        Grad_En=np.zeros(9) # For the Current contour point and its 8-neighbors
+    
+        elas_En=np.zeros(9) 
+        curv_En=np.zeros(9) 
+        Grad_En=np.zeros(9) 
         
         allpoints_8=get_8neighbors(pointsX[ind],pointsY[ind]) # retrieve neighbors
-        #print(allpoints_8)
         Grad_En =  ndimage.map_coordinates(grad_normalized, np.transpose(allpoints_8))#spline
         for neigh in range(len(allpoints_8)): #cover all neighbors           
             elas_En[neigh]=distance-(np.sqrt((allpoints_8[neigh,0]-pointsX[ind-1]) ** 2+\
                                 (allpoints_8[neigh,1]-pointsY[ind-1]) ** 2)) #neighbors
-    
+           
             curv_En[neigh]=np.sqrt((2*allpoints_8[neigh,0]-pointsX[ind+1]-pointsX[ind-1]) **2 +\
                         (2*allpoints_8[neigh,1]-pointsY[ind+1]-pointsY[ind-1]) **2)            
             
@@ -72,7 +74,7 @@ def compute_energy(pointsX, pointsY, alpha, beta, gamma, grad_normalized): #comp
 
         total_En=elas_En+curv_En+Grad_En
         indMin=np.argmin(total_En)
-        #print(pointsX[ind], pointsY[ind])
+ 
         newPointsX[ind]=allpoints_8[indMin,0]
         newPointsY[ind]=allpoints_8[indMin,1]
         

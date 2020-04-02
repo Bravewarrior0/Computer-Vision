@@ -27,6 +27,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.arr = []
         self.AC = ""
+       
         self.alpha_AC =self.doubleSpinBox_AC_Alpha.value()
         self.beta_AC =self.doubleSpinBox_AC_Beta.value()
         self.gamma_AC =self.doubleSpinBox_AC_Gamma.value()
@@ -95,13 +96,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
        
         x = points[0]
         y = points[1]
-        print (x, "++", y)
-        painterN = QPainter(self.label_AC.pixmap())
-        painterN.setPen(QPen(Qt.green,  1, Qt.SolidLine))   
+        print(len(x), " ", len(y))
+        painter = QPainter(self.label_AC.pixmap())
+        painter.setPen(QPen(Qt.green,  1, Qt.SolidLine))   
         for i in range (len(x)):
-            painterN.drawPoint(x[i], y[i])
-            painterN.end()
-            self.update()
+            painter.drawPoint(x[i], y[i])
+        painter.end()
+        self.update()   
 
     def ED_AC(self):
         self.total_settings_AC()  
@@ -140,7 +141,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def mousePressEvent(self, e):
         if self.AC != "" and ( ( (e.x() > self.label_AC.x()) and ( e.x() < self.label_AC.x()+self.label_AC.width() ) ) and ( ( e.y() > self.label_AC.y()) and ( e.y() < self.label_AC.y()+self.label_AC.height())) ):
-            try:
+            try:    
                 painter = QPainter(self.label_AC.pixmap())
                 mappedPoint = self.label_AC.mapFromParent(e.pos())
                 self.arr.append([mappedPoint.x(), mappedPoint.y()])
