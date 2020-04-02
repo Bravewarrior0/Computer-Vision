@@ -16,14 +16,18 @@ import numpy as np
 import cv2
 from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
-
+from PyQt5.QtGui import QPainter, QBrush, QPen
+from scipy import ndimage, signal, interpolate
+from PyQt5.QtCore import Qt
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(ApplicationWindow, self).__init__(parent)
         self.setupUi(self)
-        self.arr = [] 
-        self.AC =""
+        self.arr = []
+        self.AC = ""
+        
+        self.segma_ac = self.doubleSpinBox_sigma_AC.value()
         self.harris_fileName = None
         self.histo_fileName = 'images\Bikesgray.jpg'
         self.low = self.doubleSpinBox_low.value()
@@ -62,58 +66,75 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.comboBox_pass_filter.currentTextChanged.connect(
             self.combo_pass_filter)
         self.comboBox_hybrid.currentTextChanged.connect(self.hybrid_effect)
+
+        #Snakes
         self.pushButton_AC_load.clicked.connect(self.AC_load)
+        self.pushButton_Apply.clicked.connect(self.AC_execution)
+        self.doubleSpinBox_sigma_AC.valueChanged.connect(self.sigma_AC)
+        self.comboBox_AC.currentTextChanged.connect(self.ED_AC)
 
         # Harris tab
         self.pushButton_harris_load.clicked.connect(self.harris_load_btn)
         self.pushButton_harris_apply.clicked.connect(self.harris_apply_btn)
+    def AC_execution(self):
+        pass
+    def ED_AC(self):
+        self.total_settings_AC()  
+    def sigma_AC (self):
+        self.total_settings_AC()
+    def min_Canny_AC(self):
+        self.total_settings_AC()
+    def max_Canny_AC(self):
+        self.total_settings_AC()
+    def total_settings_AC(self):
+        self.imgFiltered=signal.convolve2d(self.img_AC, backend.gaussian_Filter_AC(self.segma_ac, (3,3)), mode='same')
+        self.edgeX = backend.sobel_h(self.imgFiltered)
+        self.edgeY = backend.sobel_v(self.imgFiltered)
+        self.img_grad=np.hypot(self.edgeX,self.edgeY)
+        self.img_norm=-backend.normalize(self.img_grad,0,1)
+        value = self.comboBox_AC.currentText()
+        if value == 'Canny ED':  
+            self.img_norm = cv2.Canny( self.img_AC, self.Td_Low_AC.value() , self.Td_High_AC.value())
+            #self.img_norm=-backend.normalize(self.img_grad,0,1)
         
+        
+        self.getImageFromArray( self.img_norm, self.label_AC)
     def AC_load(self):
         try:
             options = QFileDialog.Options()
             self.AC, _ = QFileDialog.getOpenFileName(
                 None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            self.img_AC = self.getGrayImage(self.AC)    
             
-            pixmap = QPixmap(self.AC)
-            pixmap = pixmap.scaled(self.label_AC.width(
-            ), self.label_AC.height(), QtCore.Qt.KeepAspectRatio)
-            self.label_AC.setPixmap(pixmap)
-            #print(len(self.img), "++", len(self.img[0]))
-
+            self.total_settings_AC()
+            
 
         except Exception as err:
             print(err)
-    """ def mouseMoveEvent(self, e):
-        painter = QtGui.QPainter(self.label_AC.pixmap())
-        pen = QtGui.QPen()
-        pen.setWidth(15)
-        pen.setColor(QtGui.QColor('blue'))
-        painter.setPen(pen)
-        painter.drawPoint(e.x(), e.y())
-        print(e.x(), " || " , e.y())
-        painter.end()
-        self.update()               """
-    def mousePressEvent(self,e):
-        if self.AC != "":
+
+    def mousePressEvent(self, e):
+        if self.AC != "" and ( ( (e.x() > self.label_AC.x()) and ( e.x() < self.label_AC.x()+self.label_AC.width() ) ) and ( ( e.y() > self.label_AC.y()) and ( e.y() < self.label_AC.y()+self.label_AC.height())) ):
             try:
-                self.arr.append([e.x(), e.y()])
-                painter = QtGui.QPainter(self.label_AC.pixmap())
-                pen = QtGui.QPen()
-                #pen.setWidth(10)
-                pen.setColor(QtGui.QColor('blue'))
-                painter.setPen(pen)
-                painter.drawPoint(e.x(), e.y())
+                painter = QPainter(self.label_AC.pixmap())
+                mappedPoint = self.label_AC.mapFromParent(e.pos())
+                self.arr.append([mappedPoint.x(), mappedPoint.y()])
+                painter.setPen(QPen(Qt.blue,  8, Qt.DashLine))
+                painter.drawPoint(mappedPoint.x(), mappedPoint.y())
                 #painter.drawPoint(e.x(), e.y())
                 if len(self.arr) % 2 == 0 and len(self.arr) != 0:
                     center = self.arr[-2]
                     tip = self.arr[-1]
-                    self.radius = ( (center[0]- tip[0])**2 + (center[1]-tip[1])**2 )**.5
-                    painter.drawEllipse(center[0]-self.radius, center[1]-self.radius, 2*self.radius, 2*self.radius)
+                    self.radius = ((center[0] - tip[0])
+                                   ** 2 + (center[1]-tip[1])**2)**.5
+                    #painter.drawEllipse(self.label_AC.mapFromParent(e.pos()) , 2*self.radius, 2*self.radius)
+                    painter.drawEllipse(
+                        center[0]-self.radius, center[1]-self.radius, 2*self.radius, 2*self.radius)
                     #print(self.arr[-1][0], " || " , self.arr[-1][1])
                 painter.end()
-                self.update() 
+                self.update()
             except Exception as err:
                 print(err)
+
     def hybrid_effect(self):
         self.effect = self.comboBox_pass_filter.currentText()
         self.hybrid()
@@ -201,7 +222,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as err:
             print(err)
 
-    def equalization_histograms(self,img):
+    def equalization_histograms(self, img):
         bins = np.arange(257)
         #img = self.getGrayImage(self.histo_fileName)
         histoNormal = hg.histogram(img)
@@ -252,7 +273,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         w = self.spinBox_harris_w.value()
         gaussian_size = self.spinBox_haris_gaussianSize.value()
         thershold = self.doubleSpinBox_harris_thershold.value()
-        out = harris.get_corners(img,w,k,thershold,gaussian_size)
+        out = harris.get_corners(img, w, k, thershold, gaussian_size)
         self.getImageFromArray(out, self.label_harris_output)
 
     def autoGlobalThershold_btn(self):

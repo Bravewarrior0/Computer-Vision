@@ -1113,8 +1113,8 @@
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>750</x>
-        <y>320</y>
+        <x>740</x>
+        <y>370</y>
         <width>231</width>
         <height>181</height>
        </rect>
@@ -1184,9 +1184,9 @@
       <property name="geometry">
        <rect>
         <x>740</x>
-        <y>70</y>
-        <width>241</width>
-        <height>211</height>
+        <y>40</y>
+        <width>261</width>
+        <height>311</height>
        </rect>
       </property>
       <property name="orientation">
@@ -1194,7 +1194,7 @@
       </property>
       <widget class="QGroupBox" name="groupBox_4">
        <property name="title">
-        <string>Gradient Settings </string>
+        <string>More Settings </string>
        </property>
        <widget class="QSplitter" name="splitter_21">
         <property name="geometry">
@@ -1208,61 +1208,118 @@
         <property name="orientation">
          <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QComboBox" name="comboBox_2">
+        <widget class="QComboBox" name="comboBox_AC">
          <item>
           <property name="text">
-           <string>Tab to Select ED method</string>
+           <string>Sobel ED</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>Sobel</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Canny</string>
+           <string>Canny ED</string>
           </property>
          </item>
         </widget>
        </widget>
-       <widget class="QSplitter" name="splitter_23">
+       <widget class="QGroupBox" name="groupBox_7">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>160</y>
+          <x>40</x>
+          <y>180</y>
           <width>181</width>
-          <height>31</height>
+          <height>121</height>
          </rect>
         </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+        <property name="title">
+         <string>Canny ED Settings</string>
         </property>
-        <widget class="QLabel" name="label_23">
-         <property name="text">
-          <string>Threshold Low</string>
+        <widget class="QSplitter" name="splitter_23">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>40</y>
+           <width>73</width>
+           <height>43</height>
+          </rect>
          </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QLabel" name="label_23">
+          <property name="text">
+           <string> Low THSH</string>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="Td_Low_AC">
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.020000000000000</double>
+          </property>
+         </widget>
         </widget>
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_Threshold_Low"/>
+        <widget class="QSplitter" name="splitter_22">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>73</width>
+           <height>43</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <widget class="QLabel" name="label_16">
+          <property name="text">
+           <string>High THSH</string>
+          </property>
+         </widget>
+         <widget class="QDoubleSpinBox" name="Td_High_AC">
+          <property name="maximum">
+           <double>1.000000000000000</double>
+          </property>
+          <property name="singleStep">
+           <double>0.010000000000000</double>
+          </property>
+          <property name="value">
+           <double>0.090000000000000</double>
+          </property>
+         </widget>
+        </widget>
        </widget>
-       <widget class="QSplitter" name="splitter_22">
+       <widget class="QSplitter" name="splitter_29">
         <property name="geometry">
          <rect>
-          <x>20</x>
-          <y>120</y>
-          <width>191</width>
-          <height>31</height>
+          <x>50</x>
+          <y>110</y>
+          <width>142</width>
+          <height>43</height>
          </rect>
         </property>
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Vertical</enum>
         </property>
-        <widget class="QLabel" name="label_16">
+        <widget class="QLabel" name="label_27">
          <property name="text">
-          <string>Threshold High</string>
+          <string>Sigma Gaussian filter</string>
          </property>
         </widget>
-        <widget class="QDoubleSpinBox" name="doubleSpinBox_Threshold_Hign"/>
+        <widget class="QDoubleSpinBox" name="doubleSpinBox_sigma_AC">
+         <property name="maximum">
+          <double>1.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+         <property name="value">
+          <double>0.300000000000000</double>
+         </property>
+        </widget>
        </widget>
       </widget>
      </widget>
