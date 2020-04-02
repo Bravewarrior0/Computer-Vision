@@ -5,6 +5,7 @@ import CV404Filters as backend
 import CV404Histograms as hg
 import CV404Frequency as freq
 import CV404Harris as harris
+import CV404ActiveContour as ac
 from PyQt5 import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtGui import QPixmap
@@ -26,7 +27,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.arr = []
         self.AC = ""
-        
+        self.alpha_AC =self.doubleSpinBox_AC_Alpha.value()
+        self.beta_AC =self.doubleSpinBox_AC_Beta.value()
+        self.gamma_AC =self.doubleSpinBox_AC_Gamma.value()
         self.segma_ac = self.doubleSpinBox_sigma_AC.value()
         self.harris_fileName = None
         self.histo_fileName = 'images\Bikesgray.jpg'
@@ -76,8 +79,15 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Harris tab
         self.pushButton_harris_load.clicked.connect(self.harris_load_btn)
         self.pushButton_harris_apply.clicked.connect(self.harris_apply_btn)
+        
     def AC_execution(self):
-        pass
+        center = self.arr[-2]
+        tip = self.arr[-1]
+        self.radius = ((center[0] - tip[0]) ** 2 + (center[1]-tip[1])**2)**.5
+        theta=np.linspace(0, 2*np.pi, 200) # min, max, number of divisions
+        x=center[0]+self.radius*np.cos(theta)
+        y=center[1]+self.radius*np.sin(theta)
+        self.newContour=self.compute_energy(x_rep,y_rep, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
     def ED_AC(self):
         self.total_settings_AC()  
     def sigma_AC (self):
@@ -87,16 +97,17 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def max_Canny_AC(self):
         self.total_settings_AC()
     def total_settings_AC(self):
-        self.imgFiltered=signal.convolve2d(self.img_AC, backend.gaussian_Filter_AC(self.segma_ac, (3,3)), mode='same')
-        self.edgeX = backend.sobel_h(self.imgFiltered)
-        self.edgeY = backend.sobel_v(self.imgFiltered)
-        self.img_grad=np.hypot(self.edgeX,self.edgeY)
-        self.img_norm=-backend.normalize(self.img_grad,0,1)
+
+        self.imgFiltered=signal.convolve2d(self.img_AC, ac.gaussian_Filter_AC(self.segma_ac, (3,3)), mode='same')
         value = self.comboBox_AC.currentText()
         if value == 'Canny ED':  
             self.img_norm = cv2.Canny( self.img_AC, self.Td_Low_AC.value() , self.Td_High_AC.value())
             #self.img_norm=-backend.normalize(self.img_grad,0,1)
-        
+        elif value == 'Sobel ED':
+            self.edgeX = backend.sobel_h(self.imgFiltered)
+            self.edgeY = backend.sobel_v(self.imgFiltered)
+            self.img_grad=np.hypot(self.edgeX,self.edgeY)
+            self.img_norm=-ac.normalize(self.img_grad,0,1)
         
         self.getImageFromArray( self.img_norm, self.label_AC)
     def AC_load(self):

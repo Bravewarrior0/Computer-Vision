@@ -209,13 +209,3 @@ def uniformNoise (img):
             uniformNoise[x][y] = (random.uniform(0,255) + img[x][y]) / 2 
     return uniformNoise
 
-def gaussian_Filter_AC(sigma, shape):
-    filter=np.zeros(shape)
-    filter[1,1]=1
-    return ndimage.gaussian_filter(filter, sigma)
-
-
-def normalize(array, newMin, newMax):
-    minArr=array.min()
-    maxArr=array.max()
-    return ((array-minArr)/(maxArr-minArr))*(newMax-newMin)+newMin    
