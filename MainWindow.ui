@@ -39,7 +39,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="tab_filters">
      <attribute name="title">
@@ -1248,7 +1248,7 @@
      <widget class="QGroupBox" name="groupBox_3">
       <property name="geometry">
        <rect>
-        <x>740</x>
+        <x>750</x>
         <y>370</y>
         <width>231</width>
         <height>181</height>
@@ -1260,8 +1260,8 @@
       <widget class="QSplitter" name="splitter_17">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>90</y>
+         <x>40</x>
+         <y>140</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -1274,13 +1274,23 @@
          <string>Gamma</string>
         </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_AC_Gamma"/>
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_AC_Gamma">
+        <property name="maximum">
+         <double>5.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.400000000000000</double>
+        </property>
+       </widget>
       </widget>
       <widget class="QSplitter" name="splitter_18">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>130</y>
+         <x>40</x>
+         <y>90</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -1293,13 +1303,23 @@
          <string>Beta</string>
         </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_AC_Beta"/>
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_AC_Beta">
+        <property name="maximum">
+         <double>5.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.800000000000000</double>
+        </property>
+       </widget>
       </widget>
       <widget class="QSplitter" name="splitter_16">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>45</y>
+         <x>40</x>
+         <y>40</y>
          <width>141</width>
          <height>31</height>
         </rect>
@@ -1312,7 +1332,17 @@
          <string>Alpha</string>
         </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox_AC_Alpha"/>
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_AC_Alpha">
+        <property name="maximum">
+         <double>5.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.500000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.500000000000000</double>
+        </property>
+       </widget>
       </widget>
      </widget>
      <widget class="QSplitter" name="splitter_19">
@@ -1475,12 +1505,12 @@
         <string>Clear Anchores</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_Apply">
+      <widget class="QPushButton" name="pushButton_AC_apply">
        <property name="text">
         <string>Apply</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_Reset">
+      <widget class="QPushButton" name="pushButton_AC_reset">
        <property name="text">
         <string>Reset</string>
        </property>

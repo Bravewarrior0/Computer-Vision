@@ -72,22 +72,35 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #Snakes
         self.pushButton_AC_load.clicked.connect(self.AC_load)
-        self.pushButton_Apply.clicked.connect(self.AC_execution)
         self.doubleSpinBox_sigma_AC.valueChanged.connect(self.sigma_AC)
         self.comboBox_AC.currentTextChanged.connect(self.ED_AC)
+        self.pushButton_AC_apply.clicked.connect(self.AC_execution)
 
         # Harris tab
         self.pushButton_harris_load.clicked.connect(self.harris_load_btn)
         self.pushButton_harris_apply.clicked.connect(self.harris_apply_btn)
-        
+    
+
     def AC_execution(self):
-        center = self.arr[-2]
-        tip = self.arr[-1]
-        self.radius = ((center[0] - tip[0]) ** 2 + (center[1]-tip[1])**2)**.5
-        theta=np.linspace(0, 2*np.pi, 200) # min, max, number of divisions
-        x=center[0]+self.radius*np.cos(theta)
-        y=center[1]+self.radius*np.sin(theta)
-        self.newContour=self.compute_energy(x_rep,y_rep, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
+        self.radius = ((self.center[0] - self.tip[0]) ** 2 + (self.center[1]-self.tip[1])**2)**.5
+        self.theta=np.linspace(0, 2*np.pi, 200) # min, max, number of divisions
+        self.x_AC=self.center[0]+self.radius*np.cos(self.theta)
+        self.y_AC=self.center[1]+self.radius*np.sin(self.theta)
+        self.x_rep_AC = ac.circ_replicate(self.x_AC)
+        self.y_rep_AC = ac.circ_replicate(self.y_AC)
+        self.newContour=ac.compute_energy(self.x_rep_AC,self.y_rep_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
+        self.drawNewCont(self.newContour)
+
+    def drawNewCont(self, points):
+        x = points[0]
+        y = points[1]
+        painterN = QPainter(self.label_AC.pixmap())
+        painterN.setPen(QPen(Qt.blue,  8, Qt.DashLine))   
+        for i in range (len(x)):
+            painterN.drawPoint(x[i], y[i])
+            painterN.end()
+            self.update()
+
     def ED_AC(self):
         self.total_settings_AC()  
     def sigma_AC (self):
@@ -133,13 +146,13 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 painter.drawPoint(mappedPoint.x(), mappedPoint.y())
                 #painter.drawPoint(e.x(), e.y())
                 if len(self.arr) % 2 == 0 and len(self.arr) != 0:
-                    center = self.arr[-2]
-                    tip = self.arr[-1]
-                    self.radius = ((center[0] - tip[0])
-                                   ** 2 + (center[1]-tip[1])**2)**.5
+                    self.center = self.arr[-2]
+                    self.tip = self.arr[-1]
+                    self.radius = ((self.center[0] - self.tip[0])
+                                   ** 2 + (self.center[1]-self.tip[1])**2)**.5
                     #painter.drawEllipse(self.label_AC.mapFromParent(e.pos()) , 2*self.radius, 2*self.radius)
                     painter.drawEllipse(
-                        center[0]-self.radius, center[1]-self.radius, 2*self.radius, 2*self.radius)
+                        self.center[0]-self.radius, self.center[1]-self.radius, 2*self.radius, 2*self.radius)
                     #print(self.arr[-1][0], " || " , self.arr[-1][1])
                 painter.end()
                 self.update()
