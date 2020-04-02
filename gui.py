@@ -21,7 +21,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(ApplicationWindow, self).__init__(parent)
         self.setupUi(self)
-
+        self.histo_fileName = 'images\Bikesgray.jpg'
         self.low = self.doubleSpinBox_low.value()
         self.filterSize = self.spinBox_filter_size.value()
         self.mu = self.doubleSpinBox_mu.value()
@@ -147,9 +147,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as err:
             print(err)
 
-    def equalization_histograms(self):
+    def equalization_histograms(self,img):
         bins = np.arange(257)
-        img = self.getGrayImage(self.histo_fileName)
+        #img = self.getGrayImage(self.histo_fileName)
         histoNormal = hg.histogram(img)
         equalized_array = hg.equalization(img)
         histoEqualized = hg.histogram(equalized_array)
@@ -160,6 +160,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                                stepMode=True, fillLevel=0, brush='b')
 
     def histo_load_btn(self):
+        current = self.histo_fileName
         try:
             options = QFileDialog.Options()
             self.histo_fileName, _ = QFileDialog.getOpenFileName(
@@ -168,9 +169,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             pixmap = pixmap.scaled(self.label_histograms_input.width(
             ), self.label_histograms_input.height(), QtCore.Qt.KeepAspectRatio)
             self.label_histograms_input.setPixmap(pixmap)
-            self.equalization_histograms()
+            img = self.getGrayImage(self.histo_fileName)
+            self.equalization_histograms(img)
 
         except Exception as err:
+            self.histo_fileName = current
             print(err)
 
     def filters_load_btn(self):

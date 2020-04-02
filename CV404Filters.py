@@ -107,20 +107,32 @@ def laplacian_using_gaussian(img,shape = 3, sigma='auto'):
     filter = img_gaussian_filter(img,shape, sigma)
     return img - filter
 
-def prewitt(img):
-   
+def prewitt_h(img):
     vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
     horizontal = vertical.transpose()
-    hGrad = convolve_img(img, horizontal)
-    vGrad = convolve_img(img, vertical)
+    return convolve_img(img, horizontal)
+
+def prewitt_v(img):
+    vertical = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+    return convolve_img(img, vertical)
+
+def prewitt(img):
+    hGrad = prewitt_h
+    vGrad = prewitt_v
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
     return img_map(magnitude)
 
-def sobel1(img):
+def sobel_v(img):
     vertical = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    return convolve_img(img, vertical)
+
+def sobel_h(img):
     horizontal = np.array([[1, 2, 1], [0, 0, 0], [-1, -2, -1]])
-    hGrad = convolve_img(img, horizontal)
-    vGrad = convolve_img(img, vertical)
+    return convolve_img(img, horizontal)
+
+def sobel1(img):
+    hGrad = sobel_h(img)
+    vGrad =  sobel_v(img)
     magnitude = np.sqrt(pow(hGrad, 2.0) + pow(vGrad, 2.0))
     direction = np.arctan2(vGrad, hGrad)
     magnitude /= np.max(magnitude)
