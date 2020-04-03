@@ -154,3 +154,38 @@ def get_hough_lines(img, threshold = 0.3):
 #     accumulator, thetas, rhos = hough_line(img)
 #     # pass here the saved path
 #     show_hough_line(img, accumulator, save_path='/home/muhamed/cv404-2020-assignment-02-sbme404-2020-team05/output01.jpg')
+
+from PIL import Image, ImageDraw
+from math import sqrt, pi, cos, sin
+from Canny import canny_edge_detector
+from collections import defaultdict
+
+def hough_circles(src, rmin =20, rmax = 25,threshold =0.2, steps = 100):
+    input_image = Image.open(src)
+    output_image = Image.new("RGB", input_image.size)
+    output_image.paste(input_image)
+    draw_result = ImageDraw.Draw(output_image)
+    points = []
+    for r in range(rmin, rmax + 1):
+        for t in range(steps):
+            points.append((r, int(r * cos(2 * pi * t / steps)), int(r * sin(2 * pi * t / steps))))
+
+    acc = defaultdict(int)
+    for x, y in canny_edge_detector(input_image):
+        for r, dx, dy in points:
+            a = x - dx
+            b = y - dy
+            acc[(a, b, r)] += 1
+
+    circles = []
+    for k, v in sorted(acc.items(), key=lambda i: -i[1]):
+        x, y, r = k
+        if v / steps >= threshold and all((x - xc) ** 2 + (y - yc) ** 2 > rc ** 2 for xc, yc, rc in circles):
+            circles.append((x, y, r))
+
+    for x, y, r in circles:
+        draw_result.ellipse((x-r, y-r, x+r, y+r), outline=(255,0,0,0))
+
+    # Save output image
+    output_image.save("hough.png")
+    return mpimg.imread('hough.png')

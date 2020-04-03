@@ -285,6 +285,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             #     painter.drawLine(int(origin[0]),int(origin[1]), int(y0), int(y1))
             # painter.end()
             # self.update()
+        else:
+            out = hough.hough_circles(self.harris_fileName)
+            self.getImageFromArray(out, self.label_hough_out)
         
     def equalization_histograms(self, img):
         bins = np.arange(257)
