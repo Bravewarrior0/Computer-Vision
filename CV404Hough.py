@@ -59,23 +59,37 @@ def extract_lines( accumulator , thetas , rhos , threshold = 0.5) :
     rho_peak = np.array(rho_peak)
     return acc2, theta_peak, rho_peak
 
-def get_hough_lines(img, threshold = 0.5):
+def get_hough_lines(img, threshold = 0.3):
     gray = rgb2gray(img)
     edge = canny(gray)
     accs, ths, rs  = hough_line(edge)
-    acc,theta_peak,rho_peak =extract_lines(acc,th,r,threshold)
-    return acc,theta_peak,rho_peak
+    fig, ax = plt.subplots()
+    ax.imshow(img)
+    ax.autoscale(False)
+    ax.axis('off')
+    origin = np.array((0, img.shape[1]))
+    for _, angle, dist in zip(*extract_lines(accs, ths, rs,threshold)):
+        y0, y1 = (dist - origin * np.cos(angle)) / np.sin(angle)
+        ax.plot(origin, (y0, y1), '-r')
+    plt.show(block=False)
+    plt.close()
+    fig.savefig("hough.png")
+    # fig.canvas.draw()
+    # data = np.fromstring(fig.canvas.tostring_rgb(), dtype=np.uint8, sep='')
+    # data = data.reshape(fig.canvas.get_width_height()[::-1] + (3,))
+    # imgplot = plt.imshow(data,cmap=plt.get_cmap('gray'))
+    # plt.show()
 
-
-
-# fig, ax = plt.subplots()
-# ax.imshow(img_c)
-# ax.autoscale(False)
-# origin = np.array((0, img.shape[1]))
-# for _, angle, dist in zip(*extract_lines(acc, th, r)):
-#     y0, y1 = (dist - origin * np.cos(angle)) / np.sin(angle)
-#     ax.plot(origin, (y0, y1), '-r')
 # plt.show()
+    # acc,theta_peak,rho_peak =extract_lines(accs,ths,rs,threshold)
+
+    # return acc,theta_peak,rho_peak
+    return mpimg.imread('hough.png')
+
+# img_c = mpimg.imread('images\chess_board.jpg')
+# get_hough_lines(img_c)
+
+
 
 
 # def hough_line(img, angle_step=1, lines_are_white=True, value_threshold=5):

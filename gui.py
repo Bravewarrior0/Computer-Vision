@@ -5,6 +5,7 @@ import CV404Filters as backend
 import CV404Histograms as hg
 import CV404Frequency as freq
 import CV404Harris as harris
+import CV404Hough as hough
 import CV404ActiveContour as ac
 from PyQt5 import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
@@ -33,6 +34,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.gamma_AC =self.doubleSpinBox_AC_Gamma.value()
         self.segma_ac = self.doubleSpinBox_sigma_AC.value()
         self.harris_fileName = None
+        self.hough_fileName = None
         self.histo_fileName = 'images\Bikesgray.jpg'
         self.low = self.doubleSpinBox_low.value()
         self.filterSize = self.spinBox_filter_size.value()
@@ -80,7 +82,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Harris tab
         self.pushButton_harris_load.clicked.connect(self.harris_load_btn)
         self.pushButton_harris_apply.clicked.connect(self.harris_apply_btn)
-    
+
+        # Hough
+        self.pushButton_hough_load.clicked.connect(self.hough_load_btn)
+        self.pushButton_hough_apply.clicked.connect(self.hough_apply_btn)
 
     def AC_execution(self):
         self.radius = ((self.center[0] - self.tip[0]) ** 2 + (self.center[1]-self.tip[1])**2)**.5
@@ -247,7 +252,36 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.label_harris_input.setPixmap(pixmap)
         except Exception as err:
             print(err)
+    #hough load
+    def hough_load_btn(self):
+        try:
+            options = QFileDialog.Options()
+            self.hough_fileName, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.hough_fileName)
+            if(not pixmap.isNull()):
+                pixmap = pixmap.scaled(self.label_hough_in.width(
+                ), self.label_hough_in.height(), QtCore.Qt.KeepAspectRatio)
+                self.label_hough_in.setPixmap(pixmap)
+        except Exception as err:
+            print(err)
 
+    #hough apply
+    def hough_apply_btn(self):
+        img = self.getImage(self.hough_fileName)
+        out = hough.get_hough_lines(img)
+        self.getImageFromArray(out, self.label_hough_out)
+        # origin = np.array((0, img.shape[1]))
+        # painter = QPainter(self.label_hough_out.pixmap())
+        # pen = QPen()
+        # pen.setColor(QtGui.QColor('red'))
+        # painter.setPen(pen)
+        # for _, angle, dist in zip(*hough.get_hough_lines(img)):
+        #     y0, y1 = (dist - origin * np.cos(angle)) / np.sin(angle)
+        #     painter.drawLine(int(origin[0]),int(origin[1]), int(y0), int(y1))
+        # painter.end()
+        # self.update()
+        
     def equalization_histograms(self, img):
         bins = np.arange(257)
         #img = self.getGrayImage(self.histo_fileName)
