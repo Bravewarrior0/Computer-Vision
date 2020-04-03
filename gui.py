@@ -268,19 +268,23 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     #hough apply
     def hough_apply_btn(self):
-        img = self.getImage(self.hough_fileName)
-        out = hough.get_hough_lines(img)
-        self.getImageFromArray(out, self.label_hough_out)
-        # origin = np.array((0, img.shape[1]))
-        # painter = QPainter(self.label_hough_out.pixmap())
-        # pen = QPen()
-        # pen.setColor(QtGui.QColor('red'))
-        # painter.setPen(pen)
-        # for _, angle, dist in zip(*hough.get_hough_lines(img)):
-        #     y0, y1 = (dist - origin * np.cos(angle)) / np.sin(angle)
-        #     painter.drawLine(int(origin[0]),int(origin[1]), int(y0), int(y1))
-        # painter.end()
-        # self.update()
+        if(self.hough_fileName == None):
+            return
+        if(self.radioButton_line.isChecked()):
+            img = self.getImage(self.hough_fileName)
+            thershold = self.doubleSpinBox_hough_thershold.value()
+            out = hough.get_hough_lines(img,thershold)
+            self.getImageFromArray(out, self.label_hough_out)
+            # origin = np.array((0, img.shape[1]))
+            # painter = QPainter(self.label_hough_out.pixmap())
+            # pen = QPen()
+            # pen.setColor(QtGui.QColor('red'))
+            # painter.setPen(pen)
+            # for _, angle, dist in zip(*hough.get_hough_lines(img)):
+            #     y0, y1 = (dist - origin * np.cos(angle)) / np.sin(angle)
+            #     painter.drawLine(int(origin[0]),int(origin[1]), int(y0), int(y1))
+            # painter.end()
+            # self.update()
         
     def equalization_histograms(self, img):
         bins = np.arange(257)

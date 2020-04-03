@@ -2,13 +2,11 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -328,33 +326,44 @@ class Ui_MainWindow(object):
         self.groupBox_9 = QtWidgets.QGroupBox(self.groupBox_8)
         self.groupBox_9.setGeometry(QtCore.QRect(260, 30, 521, 91))
         self.groupBox_9.setObjectName("groupBox_9")
-        self.widget = QtWidgets.QWidget(self.groupBox_8)
-        self.widget.setGeometry(QtCore.QRect(30, 40, 181, 71))
-        self.widget.setObjectName("widget")
-        self.gridLayout = QtWidgets.QGridLayout(self.widget)
+        self.label_35 = QtWidgets.QLabel(self.groupBox_9)
+        self.label_35.setGeometry(QtCore.QRect(23, 30, 62, 26))
+        self.label_35.setObjectName("label_35")
+        self.doubleSpinBox_hough_thershold = QtWidgets.QDoubleSpinBox(self.groupBox_9)
+        self.doubleSpinBox_hough_thershold.setGeometry(QtCore.QRect(90, 30, 85, 26))
+        self.doubleSpinBox_hough_thershold.setDecimals(2)
+        self.doubleSpinBox_hough_thershold.setMaximum(1.0)
+        self.doubleSpinBox_hough_thershold.setSingleStep(0.01)
+        self.doubleSpinBox_hough_thershold.setProperty("value", 0.4)
+        self.doubleSpinBox_hough_thershold.setObjectName("doubleSpinBox_hough_thershold")
+        self.layoutWidget6 = QtWidgets.QWidget(self.groupBox_8)
+        self.layoutWidget6.setGeometry(QtCore.QRect(30, 40, 181, 71))
+        self.layoutWidget6.setObjectName("layoutWidget6")
+        self.gridLayout = QtWidgets.QGridLayout(self.layoutWidget6)
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setObjectName("gridLayout")
-        self.label_30 = QtWidgets.QLabel(self.widget)
+        self.label_30 = QtWidgets.QLabel(self.layoutWidget6)
         self.label_30.setObjectName("label_30")
         self.gridLayout.addWidget(self.label_30, 0, 0, 1, 2)
-        self.checkBox_circle = QtWidgets.QCheckBox(self.widget)
-        self.checkBox_circle.setObjectName("checkBox_circle")
-        self.gridLayout.addWidget(self.checkBox_circle, 1, 0, 1, 1)
-        self.checkBox_line = QtWidgets.QCheckBox(self.widget)
-        self.checkBox_line.setObjectName("checkBox_line")
-        self.gridLayout.addWidget(self.checkBox_line, 1, 1, 1, 1)
-        self.widget1 = QtWidgets.QWidget(self.tab_Hough)
-        self.widget1.setGeometry(QtCore.QRect(180, 10, 811, 461))
-        self.widget1.setObjectName("widget1")
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.widget1)
+        self.radioButton_circle = QtWidgets.QRadioButton(self.layoutWidget6)
+        self.radioButton_circle.setObjectName("radioButton_circle")
+        self.gridLayout.addWidget(self.radioButton_circle, 1, 0, 1, 1)
+        self.radioButton_line = QtWidgets.QRadioButton(self.layoutWidget6)
+        self.radioButton_line.setChecked(True)
+        self.radioButton_line.setObjectName("radioButton_line")
+        self.gridLayout.addWidget(self.radioButton_line, 1, 1, 1, 1)
+        self.layoutWidget7 = QtWidgets.QWidget(self.tab_Hough)
+        self.layoutWidget7.setGeometry(QtCore.QRect(180, 10, 811, 461))
+        self.layoutWidget7.setObjectName("layoutWidget7")
+        self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.layoutWidget7)
         self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.label_hough_in = QtWidgets.QLabel(self.widget1)
+        self.label_hough_in = QtWidgets.QLabel(self.layoutWidget7)
         self.label_hough_in.setFrameShape(QtWidgets.QFrame.Box)
         self.label_hough_in.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.label_hough_in.setObjectName("label_hough_in")
         self.horizontalLayout_7.addWidget(self.label_hough_in)
-        self.label_hough_out = QtWidgets.QLabel(self.widget1)
+        self.label_hough_out = QtWidgets.QLabel(self.layoutWidget7)
         self.label_hough_out.setFrameShape(QtWidgets.QFrame.Box)
         self.label_hough_out.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.label_hough_out.setObjectName("label_hough_out")
@@ -430,18 +439,18 @@ class Ui_MainWindow(object):
         self.doubleSpinBox_harris_thershold.setSingleStep(1e-06)
         self.doubleSpinBox_harris_thershold.setProperty("value", 0.0001)
         self.doubleSpinBox_harris_thershold.setObjectName("doubleSpinBox_harris_thershold")
-        self.layoutWidget6 = QtWidgets.QWidget(self.tab_Harris)
-        self.layoutWidget6.setGeometry(QtCore.QRect(170, 20, 831, 351))
-        self.layoutWidget6.setObjectName("layoutWidget6")
-        self.horizontalLayout_12 = QtWidgets.QHBoxLayout(self.layoutWidget6)
+        self.layoutWidget8 = QtWidgets.QWidget(self.tab_Harris)
+        self.layoutWidget8.setGeometry(QtCore.QRect(170, 20, 831, 351))
+        self.layoutWidget8.setObjectName("layoutWidget8")
+        self.horizontalLayout_12 = QtWidgets.QHBoxLayout(self.layoutWidget8)
         self.horizontalLayout_12.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
-        self.label_harris_input = QtWidgets.QLabel(self.layoutWidget6)
+        self.label_harris_input = QtWidgets.QLabel(self.layoutWidget8)
         self.label_harris_input.setFrameShape(QtWidgets.QFrame.Box)
         self.label_harris_input.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
         self.label_harris_input.setObjectName("label_harris_input")
         self.horizontalLayout_12.addWidget(self.label_harris_input)
-        self.label_harris_output = QtWidgets.QLabel(self.layoutWidget6)
+        self.label_harris_output = QtWidgets.QLabel(self.layoutWidget8)
         self.label_harris_output.setFrameShape(QtWidgets.QFrame.Box)
         self.label_harris_output.setTextFormat(QtCore.Qt.PlainText)
         self.label_harris_output.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
@@ -577,7 +586,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_AC, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1024, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1024, 21))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -585,7 +594,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
 
         self.retranslateUi(MainWindow)
-        self.tabWidget.setCurrentIndex(6)
+        self.tabWidget.setCurrentIndex(4)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -661,9 +670,10 @@ class Ui_MainWindow(object):
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_Frequency), _translate("MainWindow", "Frequency"))
         self.groupBox_8.setTitle(_translate("MainWindow", "Operator Settings "))
         self.groupBox_9.setTitle(_translate("MainWindow", "Additional Tunable Parameters"))
+        self.label_35.setText(_translate("MainWindow", "Thershold"))
         self.label_30.setText(_translate("MainWindow", "Select shapes"))
-        self.checkBox_circle.setText(_translate("MainWindow", "Circle"))
-        self.checkBox_line.setText(_translate("MainWindow", "Line"))
+        self.radioButton_circle.setText(_translate("MainWindow", "Circle"))
+        self.radioButton_line.setText(_translate("MainWindow", "Line"))
         self.label_hough_in.setText(_translate("MainWindow", "Input Image"))
         self.label_hough_out.setText(_translate("MainWindow", "Output Image"))
         self.pushButton_hough_load.setText(_translate("MainWindow", "Load Image"))
@@ -702,8 +712,8 @@ class Ui_MainWindow(object):
         self.label_24.setText(_translate("MainWindow", "Name"))
         self.label_25.setText(_translate("MainWindow", "Size"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_AC), _translate("MainWindow", "Active Contour "))
-from pyqtgraph import PlotWidget
 
+from pyqtgraph import PlotWidget
 
 if __name__ == "__main__":
     import sys
@@ -713,3 +723,4 @@ if __name__ == "__main__":
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())
+
