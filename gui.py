@@ -286,7 +286,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # painter.end()
             # self.update()
         else:
-            out = hough.hough_circles(self.harris_fileName)
+            out = hough.hough_circles(self.hough_fileName)
             self.getImageFromArray(out, self.label_hough_out)
         
     def equalization_histograms(self, img):
