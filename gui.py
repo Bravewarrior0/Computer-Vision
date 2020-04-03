@@ -286,7 +286,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             # painter.end()
             # self.update()
         else:
-            out = hough.hough_circles(self.hough_fileName)
+            steps = self.spinBox_hough_steps.value()
+            rmin =  self.spinBox_hough_rmin.value()
+            rmax =  self.spinBox_hough_rmax.value()
+            thershold = self.doubleSpinBox_hough_thershold.value()
+            out = hough.hough_circles(self.hough_fileName,rmin,rmax,thershold)
             self.getImageFromArray(out, self.label_hough_out)
         
     def equalization_histograms(self, img):

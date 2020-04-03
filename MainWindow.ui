@@ -911,6 +911,102 @@
          <double>0.400000000000000</double>
         </property>
        </widget>
+       <widget class="QLabel" name="label_36">
+        <property name="geometry">
+         <rect>
+          <x>200</x>
+          <y>30</y>
+          <width>31</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Rmin</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_hough_rmin">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>30</y>
+          <width>51</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>200</number>
+        </property>
+        <property name="value">
+         <number>25</number>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_hough_rmax">
+        <property name="geometry">
+         <rect>
+          <x>340</x>
+          <y>30</y>
+          <width>61</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>200</number>
+        </property>
+        <property name="value">
+         <number>26</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_37">
+        <property name="geometry">
+         <rect>
+          <x>310</x>
+          <y>30</y>
+          <width>53</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Rmax</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_38">
+        <property name="geometry">
+         <rect>
+          <x>410</x>
+          <y>30</y>
+          <width>41</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>steps</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_hough_steps">
+        <property name="geometry">
+         <rect>
+          <x>450</x>
+          <y>30</y>
+          <width>61</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="value">
+         <number>100</number>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
