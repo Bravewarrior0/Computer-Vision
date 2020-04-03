@@ -41,11 +41,16 @@ def get_8neighbors(pointsX, pointsY): #
                              [pointsX+1,pointsY-1], [pointsX+1,pointsY+1]   ] )
     return pointsOut
 
+def norm(arr):
+    return np.sqrt(arr[0]**2 + arr[1]**2 )
 def compute_energy(pointsX, pointsY, alpha, beta, gamma, grad_normalized): #compute continuity energy
     #print(pointsX)
     #print(pointsY)
     newPointsX=np.zeros(pointsX.shape)
-    newPointsY=np.zeros(pointsY.shape)    
+    newPointsY=np.zeros(pointsY.shape)  
+    Emin =1000000000  
+    c = np.zeros(len(pointsX))
+    th = .7
     
     distance=0 #compute average distance 
     for ind in range(1,len(pointsX)-1): #loop over indices strarting from index 1(in the padded array)
@@ -73,10 +78,30 @@ def compute_energy(pointsX, pointsY, alpha, beta, gamma, grad_normalized): #comp
         Grad_En=gamma*Grad_En
 
         total_En=elas_En+curv_En+Grad_En
-        indMin=np.argmin(total_En)
- 
+        EminTotal = min(total_En)
+        if EminTotal<Emin:
+            Emin = EminTotal  
+            indMin=np.argmin(EminTotal)  
+
         newPointsX[ind]=allpoints_8[indMin,0]
         newPointsY[ind]=allpoints_8[indMin,1]
+
+        #Beta relaxation algo
+        Ui = [ pointsX[ind]-pointsX[ind-1], pointsY[ind]-pointsY[ind-1] ]
+        Ui_1 = [ pointsX[ind+1]-pointsX[ind], pointsY[ind+1]-pointsY[ind] ]
+        vi = [pointsX[ind], pointsY[ind]]
+        vi_11 = [pointsX[ind-1], pointsY[ind-1]]
+        vi_12 = [pointsX[ind+1], pointsY[ind+1]]
+        CC = (Ui/norm(Ui))  - (Ui_1/norm(Ui_1)) 
+
+        c[ind] = norm(CC)**2
+        
+
+        mag = np.hypot(vi[0],vi[1])
+        if ((c[ind] > c[ind-1]) and (c[ind]> c[ind+1])) and (c[ind] > th) and ( mag> mag-th):
+            beta = 0
+ 
+       
         
     return newPointsX, newPointsY
 

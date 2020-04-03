@@ -89,16 +89,15 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.y_AC=self.center[1]+self.radius*np.sin(self.theta)
         self.x_rep_AC = ac.circ_replicate(self.x_AC)
         self.y_rep_AC = ac.circ_replicate(self.y_AC)
-        self.newContour=ac.compute_energy(self.x_AC,self.y_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
+        self.newContour=ac.compute_energy(self.x_rep_AC,self.y_rep_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
         self.drawNewCont(self.newContour)
 
     def drawNewCont(self, points):
        
         x = points[0]
         y = points[1]
-        print(len(x), " ", len(y))
         painter = QPainter(self.label_AC.pixmap())
-        painter.setPen(QPen(Qt.green,  1, Qt.SolidLine))   
+        painter.setPen(QPen(Qt.red,  1, Qt.SolidLine))   
         for i in range (len(x)):
             painter.drawPoint(x[i], y[i])
         painter.end()
@@ -145,7 +144,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 painter = QPainter(self.label_AC.pixmap())
                 mappedPoint = self.label_AC.mapFromParent(e.pos())
                 self.arr.append([mappedPoint.x(), mappedPoint.y()])
-                painter.setPen(QPen(Qt.blue,  8, Qt.DashLine))
+                painter.setPen(QPen(Qt.blue,  1, Qt.DashLine))
                 painter.drawPoint(mappedPoint.x(), mappedPoint.y())
                 #painter.drawPoint(e.x(), e.y())
                 if len(self.arr) % 2 == 0 and len(self.arr) != 0:
