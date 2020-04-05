@@ -26,13 +26,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(ApplicationWindow, self).__init__(parent)
         self.setupUi(self)
+
+
         self.arr = []
         self.AC = ""
-       
-        self.alpha_AC =self.doubleSpinBox_AC_Alpha.value()
-        self.beta_AC =self.doubleSpinBox_AC_Beta.value()
-        self.gamma_AC =self.doubleSpinBox_AC_Gamma.value()
-        self.segma_ac = self.doubleSpinBox_sigma_AC.value()
         self.harris_fileName = None
         self.hough_fileName = None
         self.histo_fileName = 'images\Bikesgray.jpg'
@@ -75,9 +72,9 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         #Snakes
         self.pushButton_AC_load.clicked.connect(self.AC_load)
-        self.doubleSpinBox_sigma_AC.valueChanged.connect(self.sigma_AC)
         self.comboBox_AC.currentTextChanged.connect(self.ED_AC)
         self.pushButton_AC_apply.clicked.connect(self.AC_execution)
+        self.pushButton_AC_reset.clicked.connect(self.AC_reset)
 
         # Harris tab
         self.pushButton_harris_load.clicked.connect(self.harris_load_btn)
@@ -86,23 +83,43 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Hough
         self.pushButton_hough_load.clicked.connect(self.hough_load_btn)
         self.pushButton_hough_apply.clicked.connect(self.hough_apply_btn)
-
+    def AC_reset(self):
+        self.arr = []
+        self.AC = ""
+        self.label_AC.clear()
     def AC_execution(self):
-        self.radius = ((self.center[0] - self.tip[0]) ** 2 + (self.center[1]-self.tip[1])**2)**.5
-        self.theta=np.linspace(0, 2*np.pi, 200) # min, max, number of divisions
+        self.pushButton_AC_apply.setEnabled(False)
+        self.pushButton_AC_reset.setEnabled(False)
+        self.pushButton_Clear_AC.setEnabled(False)
+
+        self.alpha_AC =self.doubleSpinBox_AC_Alpha.value()
+        self.beta_AC =self.doubleSpinBox_AC_Beta.value()
+        self.gamma_AC =self.doubleSpinBox_AC_Gamma.value()
+        print (self.alpha_AC, "++", self.beta_AC,"++",self.gamma_AC)
+        self.theta=np.linspace(0, 2*np.pi, 50) # min, max, number of divisions
         self.x_AC=self.center[0]+self.radius*np.cos(self.theta)
         self.y_AC=self.center[1]+self.radius*np.sin(self.theta)
         self.x_rep_AC = ac.circ_replicate(self.x_AC)
         self.y_rep_AC = ac.circ_replicate(self.y_AC)
-        self.newContour=ac.compute_energy(self.x_rep_AC,self.y_rep_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
-        self.drawNewCont(self.newContour)
+        newContourX, newContourY,percent=ac.compute_energy(self.x_AC,self.y_AC, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
+        i=0
+        while percent > .2 and i in range (500):
+            QtWidgets.QApplication.processEvents()
+            newContourX, newContourY,percent=ac.compute_energy(newContourX,newContourY, self.alpha_AC, self.beta_AC, self.gamma_AC,self.img_norm)
+            i+=1
+            print(i, "-----------------------------+++++++++++++++++++++++++++")
+            self.drawNewCont(newContourX, newContourY )
+            
+        self.drawNewCont(newContourX, newContourY )
+        self.pushButton_AC_apply.setEnabled(True)
+        self.pushButton_AC_reset.setEnabled(True)
+        self.pushButton_Clear_AC.setEnabled(True)
 
-    def drawNewCont(self, points):
-       
-        x = points[0]
-        y = points[1]
+    def drawNewCont(self, pointX, pointY):
+        x= pointX
+        y= pointY
         painter = QPainter(self.label_AC.pixmap())
-        painter.setPen(QPen(Qt.red,  1, Qt.SolidLine))   
+        painter.setPen(QPen(Qt.red,  2, Qt.SolidLine))   
         for i in range (len(x)):
             painter.drawPoint(x[i], y[i])
         painter.end()
@@ -110,26 +127,20 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def ED_AC(self):
         self.total_settings_AC()  
-    def sigma_AC (self):
-        self.total_settings_AC()
-    def min_Canny_AC(self):
-        self.total_settings_AC()
-    def max_Canny_AC(self):
-        self.total_settings_AC()
     def total_settings_AC(self):
-
+        self.segma_ac = self.doubleSpinBox_sigma_AC.value()
         self.imgFiltered=signal.convolve2d(self.img_AC, ac.gaussian_Filter_AC(self.segma_ac, (3,3)), mode='same')
         value = self.comboBox_AC.currentText()
         if value == 'Canny ED':  
-            self.img_norm = cv2.Canny( self.img_AC, self.Td_Low_AC.value() , self.Td_High_AC.value())
-            #self.img_norm=-backend.normalize(self.img_grad,0,1)
-        elif value == 'Sobel ED':
-            self.edgeX = backend.sobel_h(self.imgFiltered)
-            self.edgeY = backend.sobel_v(self.imgFiltered)
-            self.img_grad=np.hypot(self.edgeX,self.edgeY)
+            self.img_grad = Canny.canny( self.img_AC, self.Td_Low_AC.value() , self.Td_High_AC.value())
             self.img_norm=-ac.normalize(self.img_grad,0,1)
-        
-        self.getImageFromArray( self.img_norm, self.label_AC)
+        elif value == 'Sobel ED':
+            self.edgeX = ndimage.sobel(self.imgFiltered,axis=0)
+            self.edgeY=ndimage.sobel(self.imgFiltered,axis=1)
+            self.img_grad=np.hypot(self.edgeX,self.edgeY)
+            self.img_norm=-ac.normalize(self.img_grad,0,1)#
+
+        self.getImageFromArray( self.img_norm, self.label_AC)    
     def AC_load(self):
         try:
             options = QFileDialog.Options()
