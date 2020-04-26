@@ -1695,7 +1695,7 @@
       <property name="title">
        <string>Detection parameters</string>
       </property>
-      <widget class="QComboBox" name="comboBox">
+      <widget class="QComboBox" name="comboBox_tm">
        <property name="geometry">
         <rect>
          <x>30</x>
@@ -1747,7 +1747,7 @@
          <string>TextLabel</string>
         </property>
        </widget>
-       <widget class="QDoubleSpinBox" name="doubleSpinBox">
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_tm">
         <property name="maximum">
          <double>1.000000000000000</double>
         </property>
