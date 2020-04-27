@@ -115,7 +115,7 @@ def template_match(img, temp, method = 'corr', threshold = 0.55, n = 8):
 
     pcorr = local_maxima(mcorr,min(temp_g.shape)//n)
 
-    w,h = np.array(img_g.shape)/100
+    h,w = np.array(img_g.shape)/100
     fig_match = plt.figure(figsize=(w,h))
     ax_match = fig_match.add_axes([0,0,1,1])
     fig_img = plt.figure(figsize=(w,h))

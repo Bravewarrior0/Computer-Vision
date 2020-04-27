@@ -7,6 +7,7 @@ import CV404Frequency as freq
 import CV404Harris as harris
 import CV404Hough as hough
 import CV404ActiveContour as ac
+from CV404Template import template_match
 from PyQt5 import QtCore, QtGui, QtWidgets
 from qtpy.QtWidgets import QFileDialog
 from qtpy.QtGui import QPixmap
@@ -30,8 +31,11 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.arr = []
         self.AC = ""
+        self.TM_im_A = np.array([])
+        self.TM_im_B = np.array([])
         self.harris_fileName = None
         self.hough_fileName = None
+        self.TM_fileName = None
         self.histo_fileName = 'images\Bikesgray.jpg'
         self.low = self.doubleSpinBox_low.value()
         self.filterSize = self.spinBox_filter_size.value()
@@ -83,6 +87,12 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Hough
         self.pushButton_hough_load.clicked.connect(self.hough_load_btn)
         self.pushButton_hough_apply.clicked.connect(self.hough_apply_btn)
+
+        #Template Matching
+        self.pushButton_TM_load_A.clicked.connect(self.TM_load_A_btn)
+        self.pushButton_TM_load_B.clicked.connect(self.TM_load_B_btn)
+        self.pushButton_TM_match.clicked.connect(self.TM_match_btn)
+
     def AC_reset(self):
         self.arr = []
         self.AC = ""
@@ -263,6 +273,54 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.label_harris_input.setPixmap(pixmap)
         except Exception as err:
             print(err)
+
+    #Template matching load
+    def TM_load_A_btn(self):
+        try:
+            options = QFileDialog.Options()
+            self.TM_fileName, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.TM_fileName)
+            if(not pixmap.isNull()):
+                pixmap = pixmap.scaled(self.label_input_TM_A.width(
+                ), self.label_input_TM_A.height(), QtCore.Qt.KeepAspectRatio)
+                self.label_input_TM_A.setPixmap(pixmap)
+                self.TM_im_A = self.getImage(self.TM_fileName)
+        except Exception as err:
+            print(err)
+
+    def TM_load_B_btn(self):
+        try:
+            options = QFileDialog.Options()
+            self.TM_fileName, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.TM_fileName)
+            if(not pixmap.isNull()):
+                pixmap = pixmap.scaled(self.label_input_TM_B.width(
+                ), self.label_input_TM_B.height(), QtCore.Qt.KeepAspectRatio)
+                self.label_input_TM_B.setPixmap(pixmap)
+                self.label_input_TM_B.setPixmap(pixmap)
+                self.TM_im_B = self.getImage(self.TM_fileName)
+        except Exception as err:
+            print(err)
+
+    #Template matching apply 
+    def TM_match_btn(self):
+        if(self.TM_im_A.size == 0 or self.TM_im_B.size == 0):
+            return
+
+        method = 'corr'
+        if self.comboBox_tm.currentIndex()== 2:
+            method ='zmean'
+        elif self.comboBox_tm.currentIndex() == 3:
+            method = 'ssd'
+        elif self.comboBox_tm.currentIndex() == 4:
+            method = 'xcorr'
+        th = self.doubleSpinBox_tm.value()
+        matching, pattern, elapsed_time = template_match(self.TM_im_A, self.TM_im_B,method,th)
+        self.getImageFromArray(matching, self.label_matching)
+        self.getImageFromArray(pattern, self.label_pattern)
+        # self.label_tm_time.setText(str(elapsed_time))
     #hough load
     def hough_load_btn(self):
         try:
@@ -301,7 +359,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             rmin =  self.spinBox_hough_rmin.value()
             rmax =  self.spinBox_hough_rmax.value()
             thershold = self.doubleSpinBox_hough_thershold.value()
-            out = hough.hough_circles(self.hough_fileName,rmin,rmax,thershold)
+            out = hough.hough_circles(self.hough_fileName,rmin,rmax,thershold,steps)
             self.getImageFromArray(out, self.label_hough_out)
         
     def equalization_histograms(self, img):
