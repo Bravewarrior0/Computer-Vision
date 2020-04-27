@@ -1689,7 +1689,7 @@
         <x>770</x>
         <y>110</y>
         <width>241</width>
-        <height>221</height>
+        <height>241</height>
        </rect>
       </property>
       <property name="title">
@@ -1706,11 +1706,6 @@
        </property>
        <item>
         <property name="text">
-         <string>Select method </string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
          <string>correlation </string>
         </property>
        </item>
@@ -1721,7 +1716,7 @@
        </item>
        <item>
         <property name="text">
-         <string>sum of squared differences (SSD)</string>
+         <string>sum of squared differences</string>
         </property>
        </item>
        <item>
@@ -1744,7 +1739,7 @@
        </property>
        <widget class="QLabel" name="label_49">
         <property name="text">
-         <string>TextLabel</string>
+         <string>thershold</string>
         </property>
        </widget>
        <widget class="QDoubleSpinBox" name="doubleSpinBox_tm">
@@ -1756,6 +1751,35 @@
         </property>
         <property name="value">
          <double>0.500000000000000</double>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QSplitter" name="splitter_39">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>190</y>
+         <width>181</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QLabel" name="label_52">
+        <property name="text">
+         <string>n</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_TM_n">
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>12</number>
+        </property>
+        <property name="value">
+         <number>8</number>
         </property>
        </widget>
       </widget>
@@ -1886,7 +1910,7 @@
         <x>780</x>
         <y>370</y>
         <width>211</width>
-        <height>141</height>
+        <height>81</height>
        </rect>
       </property>
       <property name="orientation">
@@ -1897,11 +1921,42 @@
         <string>Match</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_42">
-       <property name="text">
-        <string>Time Elapsed:</string>
-       </property>
-      </widget>
+     </widget>
+     <widget class="QWidget" name="">
+      <property name="geometry">
+       <rect>
+        <x>780</x>
+        <y>470</y>
+        <width>211</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_8">
+       <item>
+        <widget class="QLabel" name="label_42">
+         <property name="text">
+          <string>Time Elapsed:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_TM_time">
+         <property name="text">
+          <string>0000000000</string>
+         </property>
+         <property name="textFormat">
+          <enum>Qt::AutoText</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_51">
+         <property name="text">
+          <string>sec</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </widget>
     <widget class="QWidget" name="tab_2">
@@ -2060,7 +2115,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
   </widget>

@@ -308,19 +308,19 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def TM_match_btn(self):
         if(self.TM_im_A.size == 0 or self.TM_im_B.size == 0):
             return
-
         method = 'corr'
-        if self.comboBox_tm.currentIndex()== 2:
+        if self.comboBox_tm.currentIndex()== 1:
             method ='zmean'
-        elif self.comboBox_tm.currentIndex() == 3:
+        elif self.comboBox_tm.currentIndex() == 2:
             method = 'ssd'
-        elif self.comboBox_tm.currentIndex() == 4:
+        elif self.comboBox_tm.currentIndex() == 3:
             method = 'xcorr'
         th = self.doubleSpinBox_tm.value()
-        matching, pattern, elapsed_time = template_match(self.TM_im_A, self.TM_im_B,method,th)
+        n = self.spinBox_TM_n.value()
+        matching, pattern, elapsed_time = template_match(self.TM_im_A, self.TM_im_B,method,th,n)
         self.getImageFromArray(matching, self.label_matching)
         self.getImageFromArray(pattern, self.label_pattern)
-        # self.label_tm_time.setText(str(elapsed_time))
+        self.label_TM_time.setText(str(elapsed_time))
     #hough load
     def hough_load_btn(self):
         try:

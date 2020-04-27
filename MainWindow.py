@@ -2,13 +2,11 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.3
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -616,12 +614,11 @@ class Ui_MainWindow(object):
         self.tab = QtWidgets.QWidget()
         self.tab.setObjectName("tab")
         self.groupBox_10 = QtWidgets.QGroupBox(self.tab)
-        self.groupBox_10.setGeometry(QtCore.QRect(770, 110, 241, 221))
+        self.groupBox_10.setGeometry(QtCore.QRect(770, 110, 241, 241))
         self.groupBox_10.setObjectName("groupBox_10")
         self.comboBox_tm = QtWidgets.QComboBox(self.groupBox_10)
         self.comboBox_tm.setGeometry(QtCore.QRect(30, 50, 171, 51))
         self.comboBox_tm.setObjectName("comboBox_tm")
-        self.comboBox_tm.addItem("")
         self.comboBox_tm.addItem("")
         self.comboBox_tm.addItem("")
         self.comboBox_tm.addItem("")
@@ -637,6 +634,17 @@ class Ui_MainWindow(object):
         self.doubleSpinBox_tm.setSingleStep(0.01)
         self.doubleSpinBox_tm.setProperty("value", 0.5)
         self.doubleSpinBox_tm.setObjectName("doubleSpinBox_tm")
+        self.splitter_39 = QtWidgets.QSplitter(self.groupBox_10)
+        self.splitter_39.setGeometry(QtCore.QRect(30, 190, 181, 41))
+        self.splitter_39.setOrientation(QtCore.Qt.Horizontal)
+        self.splitter_39.setObjectName("splitter_39")
+        self.label_52 = QtWidgets.QLabel(self.splitter_39)
+        self.label_52.setObjectName("label_52")
+        self.spinBox_TM_n = QtWidgets.QSpinBox(self.splitter_39)
+        self.spinBox_TM_n.setMinimum(1)
+        self.spinBox_TM_n.setMaximum(12)
+        self.spinBox_TM_n.setProperty("value", 8)
+        self.spinBox_TM_n.setObjectName("spinBox_TM_n")
         self.layoutWidget9 = QtWidgets.QWidget(self.tab)
         self.layoutWidget9.setGeometry(QtCore.QRect(160, 30, 601, 501))
         self.layoutWidget9.setObjectName("layoutWidget9")
@@ -684,13 +692,27 @@ class Ui_MainWindow(object):
         self.label_39 = QtWidgets.QLabel(self.splitter_33)
         self.label_39.setObjectName("label_39")
         self.splitter_34 = QtWidgets.QSplitter(self.tab)
-        self.splitter_34.setGeometry(QtCore.QRect(780, 370, 211, 141))
+        self.splitter_34.setGeometry(QtCore.QRect(780, 370, 211, 81))
         self.splitter_34.setOrientation(QtCore.Qt.Vertical)
         self.splitter_34.setObjectName("splitter_34")
         self.pushButton_TM_match = QtWidgets.QPushButton(self.splitter_34)
         self.pushButton_TM_match.setObjectName("pushButton_TM_match")
-        self.label_42 = QtWidgets.QLabel(self.splitter_34)
+        self.widget = QtWidgets.QWidget(self.tab)
+        self.widget.setGeometry(QtCore.QRect(780, 470, 211, 51))
+        self.widget.setObjectName("widget")
+        self.horizontalLayout_8 = QtWidgets.QHBoxLayout(self.widget)
+        self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_8.setObjectName("horizontalLayout_8")
+        self.label_42 = QtWidgets.QLabel(self.widget)
         self.label_42.setObjectName("label_42")
+        self.horizontalLayout_8.addWidget(self.label_42)
+        self.label_TM_time = QtWidgets.QLabel(self.widget)
+        self.label_TM_time.setTextFormat(QtCore.Qt.AutoText)
+        self.label_TM_time.setObjectName("label_TM_time")
+        self.horizontalLayout_8.addWidget(self.label_TM_time)
+        self.label_51 = QtWidgets.QLabel(self.widget)
+        self.label_51.setObjectName("label_51")
+        self.horizontalLayout_8.addWidget(self.label_51)
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
         self.tab_2.setObjectName("tab_2")
@@ -749,7 +771,7 @@ class Ui_MainWindow(object):
         self.tabWidget.addTab(self.tab_2, "")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1024, 22))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1024, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
@@ -879,12 +901,12 @@ class Ui_MainWindow(object):
         self.label_25.setText(_translate("MainWindow", "Size"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_AC), _translate("MainWindow", "Active Contour "))
         self.groupBox_10.setTitle(_translate("MainWindow", "Detection parameters"))
-        self.comboBox_tm.setItemText(0, _translate("MainWindow", "Select method "))
-        self.comboBox_tm.setItemText(1, _translate("MainWindow", "correlation "))
-        self.comboBox_tm.setItemText(2, _translate("MainWindow", "zero-mean correlation"))
-        self.comboBox_tm.setItemText(3, _translate("MainWindow", "sum of squared differences (SSD)"))
-        self.comboBox_tm.setItemText(4, _translate("MainWindow", "normalized cross correlations"))
-        self.label_49.setText(_translate("MainWindow", "TextLabel"))
+        self.comboBox_tm.setItemText(0, _translate("MainWindow", "correlation "))
+        self.comboBox_tm.setItemText(1, _translate("MainWindow", "zero-mean correlation"))
+        self.comboBox_tm.setItemText(2, _translate("MainWindow", "sum of squared differences"))
+        self.comboBox_tm.setItemText(3, _translate("MainWindow", "normalized cross correlations"))
+        self.label_49.setText(_translate("MainWindow", "thershold"))
+        self.label_52.setText(_translate("MainWindow", "n"))
         self.label_input_TM_A.setText(_translate("MainWindow", "Input image A"))
         self.label_matching.setText(_translate("MainWindow", "Matching space"))
         self.label_input_TM_B.setText(_translate("MainWindow", "Input image B"))
@@ -897,6 +919,8 @@ class Ui_MainWindow(object):
         self.label_39.setText(_translate("MainWindow", "Size"))
         self.pushButton_TM_match.setText(_translate("MainWindow", "Match"))
         self.label_42.setText(_translate("MainWindow", "Time Elapsed:"))
+        self.label_TM_time.setText(_translate("MainWindow", "0000000000"))
+        self.label_51.setText(_translate("MainWindow", "sec"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Template Matching "))
         self.groupBox_11.setTitle(_translate("MainWindow", "Tunable parameter"))
         self.pushButton_SIFT_load_A.setText(_translate("MainWindow", "Load image A"))
@@ -911,4 +935,5 @@ class Ui_MainWindow(object):
         self.pushButton_SIFT_match.setText(_translate("MainWindow", "Match"))
         self.label_47.setText(_translate("MainWindow", "Time Elapsed:"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "SIFT"))
+
 from pyqtgraph import PlotWidget
