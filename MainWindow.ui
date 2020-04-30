@@ -1966,100 +1966,152 @@
      <widget class="QGroupBox" name="groupBox_11">
       <property name="geometry">
        <rect>
-        <x>820</x>
-        <y>150</y>
-        <width>129</width>
-        <height>166</height>
+        <x>770</x>
+        <y>70</y>
+        <width>231</width>
+        <height>251</height>
        </rect>
       </property>
       <property name="title">
        <string>Tunable parameter</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="QSplitter" name="splitter_44">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+      <widget class="QSplitter" name="splitter_44">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>30</y>
+         <width>100</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QLabel" name="label_48">
+        <property name="text">
+         <string>octaves</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_octaves">
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>4</number>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QSplitter" name="splitter_43">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>110</y>
+         <width>89</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QLabel" name="label_50">
+        <property name="text">
+         <string>scales</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_scales">
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QSplitter" name="splitter_42">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>70</y>
+         <width>101</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QLabel" name="label_53">
+        <property name="text">
+         <string>sigma</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="doubleSpinBox_sift_sigma">
+        <property name="maximum">
+         <double>5.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.100000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.600000000000000</double>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QSplitter" name="splitter_41">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>150</y>
+         <width>56</width>
+         <height>26</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <widget class="QLabel" name="label_54">
+        <property name="text">
+         <string>k</string>
+        </property>
+       </widget>
+       <widget class="QSpinBox" name="spinBox_sift_k">
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>2</number>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QSplitter" name="splitter_45">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>190</y>
+         <width>211</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <widget class="QLabel" name="label_55">
+        <property name="text">
+         <string>select pattern orientation </string>
+        </property>
+       </widget>
+       <widget class="QComboBox" name="comboBox_pattern_orientation">
+        <item>
+         <property name="text">
+          <string>0 degree</string>
          </property>
-         <widget class="QLabel" name="label_48">
-          <property name="text">
-           <string>octaves</string>
-          </property>
-         </widget>
-         <widget class="QSpinBox" name="spinBox_octaves">
-          <property name="maximum">
-           <number>10</number>
-          </property>
-          <property name="value">
-           <number>4</number>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSplitter" name="splitter_43">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        </item>
+        <item>
+         <property name="text">
+          <string>90 degree</string>
          </property>
-         <widget class="QLabel" name="label_50">
-          <property name="text">
-           <string>scales</string>
-          </property>
-         </widget>
-         <widget class="QSpinBox" name="spinBox_scales">
-          <property name="maximum">
-           <number>10</number>
-          </property>
-          <property name="value">
-           <number>5</number>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSplitter" name="splitter_42">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <widget class="QLabel" name="label_53">
-          <property name="text">
-           <string>sigma</string>
-          </property>
-         </widget>
-         <widget class="QDoubleSpinBox" name="doubleSpinBox_sift_sigma">
-          <property name="maximum">
-           <double>5.000000000000000</double>
-          </property>
-          <property name="singleStep">
-           <double>0.100000000000000</double>
-          </property>
-          <property name="value">
-           <double>1.600000000000000</double>
-          </property>
-         </widget>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSplitter" name="splitter_41">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <widget class="QLabel" name="label_54">
-          <property name="text">
-           <string>k</string>
-          </property>
-         </widget>
-         <widget class="QSpinBox" name="spinBox_sift_k">
-          <property name="maximum">
-           <number>10</number>
-          </property>
-          <property name="value">
-           <number>2</number>
-          </property>
-         </widget>
-        </widget>
-       </item>
-      </layout>
+        </item>
+       </widget>
+      </widget>
      </widget>
      <widget class="QSplitter" name="splitter_35">
       <property name="geometry">
@@ -2148,10 +2200,10 @@
      <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
-        <x>170</x>
-        <y>30</y>
-        <width>621</width>
-        <height>571</height>
+        <x>150</x>
+        <y>10</y>
+        <width>611</width>
+        <height>601</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">

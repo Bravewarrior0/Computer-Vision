@@ -23,6 +23,10 @@ from PyQt5.QtGui import QPainter, QBrush, QPen
 from scipy import ndimage, signal, interpolate
 from PyQt5.QtCore import Qt
 import CV404SIFT as sift_file
+import matplotlib.pyplot as plt
+import timeit
+
+
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -96,12 +100,21 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
 
         # sift 
+        self.comboBox_pattern_orientation.setEnabled(False)
         self.pushButton_SIFT_load_A.clicked.connect(self.sift_imgA_load)
         self.pushButton_SIFT_load_B.clicked.connect(self.sift_imgB_load)
         self.pushButton_SIFT_match.clicked.connect(self.sift_match_btn)
+        self.comboBox_pattern_orientation.currentTextChanged.connect(self.orientation)
 
 
     ############### SIFT ############
+    def orientation(self):
+        value = self.comboBox_pattern_orientation.currentText()
+        if value == '0 degree':
+            self.getImageFromArray(self.final_result[0],self.label_SIFT_features)
+        elif  value == '90 degree':
+            self.getImageFromArray(self.final_result[1],self.label_SIFT_features)
+
     def sift_imgA_load(self):
         try:
             options = QFileDialog.Options()
@@ -137,11 +150,27 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.spinBox_scales.setReadOnly(True)
         self.doubleSpinBox_sift_sigma.setReadOnly(True)
         self.spinBox_sift_k.setReadOnly(True)
+        self.comboBox_pattern_orientation.setEnabled(False)
 
+       
         obj_sift = sift_file.sift()
-        obj_sift.sift_done(self.siftA,self.siftB)
+
+        start = timeit.default_timer()
+        QtWidgets.QApplication.processEvents()
+        self.final_result = obj_sift.sift_done(self.siftA,self.siftB)
+        stop = timeit.default_timer()
+        self.getImageFromArray(self.final_result[0],self.label_SIFT_features)
+        self.label_sift_time.setText(str(stop-start))
 
 
+        self.comboBox_pattern_orientation.setEnabled(True)
+        self.pushButton_SIFT_load_A.setEnabled(True)
+        self.pushButton_SIFT_load_B.setEnabled(True)
+        self.pushButton_SIFT_match.setEnabled(True)
+        self.spinBox_octaves.setReadOnly(False)
+        self.spinBox_scales.setReadOnly(False)
+        self.doubleSpinBox_sift_sigma.setReadOnly(False)
+        self.spinBox_sift_k.setReadOnly(False)
 
 
 
