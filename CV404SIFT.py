@@ -21,7 +21,7 @@ import sys
 
 class sift:
     
-        def __init__(self, con_oct = 4, con_scl=5, con_sgm=1.6, con_ki=2): 
+        def __init__(self, con_oct=4 , con_scl=5, con_sgm=1.6, con_ki=2): 
             self.N_OCTAVES = con_oct
             self.N_SCALES =  con_scl
             self.SIGMA = con_sgm

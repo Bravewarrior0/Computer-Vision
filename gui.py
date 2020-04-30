@@ -153,7 +153,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.comboBox_pattern_orientation.setEnabled(False)
 
        
-        obj_sift = sift_file.sift()
+        obj_sift = sift_file.sift(self.spinBox_octaves.value(), self.spinBox_scales.value(), self.doubleSpinBox_sift_sigma.value(), self.spinBox_sift_k.value() )
 
         start = timeit.default_timer()
         QtWidgets.QApplication.processEvents()
