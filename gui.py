@@ -93,6 +93,56 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.pushButton_TM_load_B.clicked.connect(self.TM_load_B_btn)
         self.pushButton_TM_match.clicked.connect(self.TM_match_btn)
 
+
+        # sift 
+        self.pushButton_SIFT_load_A.clicked.connect(self.sift_imgA_load)
+        self.pushButton_SIFT_load_B.clicked.connect(self.sift_imgB_load)
+        self.pushButton_SIFT_match.clicked.connect(self.sift_match)
+
+
+    ############### SIFT ############
+    def sift_imgA_load(self):
+        try:
+            options = QFileDialog.Options()
+            self.siftA, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.siftA)
+            pixmap = pixmap.scaled(self.label_input_SIFT_A.width(
+            ), self.label_input_SIFT_A.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_input_SIFT_A.setPixmap(pixmap)
+
+        except Exception as err:
+            print(err)
+
+    
+    def sift_imgB_load(self):
+        try:
+            options = QFileDialog.Options()
+            self.siftB, _ = QFileDialog.getOpenFileName(
+                None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
+            pixmap = QPixmap(self.siftA)
+            pixmap = pixmap.scaled(self.label_input_SIFT_B.width(
+            ), self.label_input_SIFT_B.height(), QtCore.Qt.KeepAspectRatio)
+            self.label_input_SIFT_B.setPixmap(pixmap)
+
+        except Exception as err:
+            print(err)
+
+    def sift_match(self):
+       self.pushButton_SIFT_load_A.setEnabled(False)
+       self.pushButton_SIFT_load_B.setEnabled(False)
+       self.pushButton_SIFT_match.setEnabled(False)
+       self.spinBox_octaves.setReadOnly(True)
+       self.spinBox_scales.setReadOnly(True)
+       self.doubleSpinBox_sift_sigma.setReadOnly(True)
+       self.spinBox_sift_k.setReadOnly(True)
+
+
+       
+        
+
+
+
     def AC_reset(self):
         self.arr = []
         self.AC = ""
