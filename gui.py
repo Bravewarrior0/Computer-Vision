@@ -121,9 +121,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.siftA, _ = QFileDialog.getOpenFileName(
                 None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
             pixmap = QPixmap(self.siftA)
-            pixmap = pixmap.scaled(self.label_input_SIFT_A.width(
-            ), self.label_input_SIFT_A.height(), QtCore.Qt.KeepAspectRatio)
-            self.label_input_SIFT_A.setPixmap(pixmap)
+            if(not pixmap.isNull()):
+                pixmap = pixmap.scaled(self.label_input_SIFT_A.width(
+                ), self.label_input_SIFT_A.height(), QtCore.Qt.KeepAspectRatio)
+                self.label_input_SIFT_A.setPixmap(pixmap)
 
         except Exception as err:
             print(err)
@@ -135,9 +136,10 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             self.siftB, _ = QFileDialog.getOpenFileName(
                 None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
             pixmap = QPixmap(self.siftB)
-            pixmap = pixmap.scaled(self.label_input_SIFT_B.width(
-            ), self.label_input_SIFT_B.height(), QtCore.Qt.KeepAspectRatio)
-            self.label_input_SIFT_B.setPixmap(pixmap)
+            if(not pixmap.isNull()):
+                pixmap = pixmap.scaled(self.label_input_SIFT_B.width(
+                ), self.label_input_SIFT_B.height(), QtCore.Qt.KeepAspectRatio)
+                self.label_input_SIFT_B.setPixmap(pixmap)
 
         except Exception as err:
             print(err)
