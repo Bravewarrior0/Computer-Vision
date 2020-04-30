@@ -2136,11 +2136,16 @@
       </widget>
       <widget class="QLabel" name="label_47">
        <property name="text">
-        <string>Time Elapsed:</string>
+        <string>Time Elapsed in sec:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_sift_time">
+       <property name="text">
+        <string>0</string>
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <property name="geometry">
        <rect>
         <x>170</x>

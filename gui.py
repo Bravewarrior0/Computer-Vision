@@ -22,6 +22,7 @@ import pyqtgraph as pg
 from PyQt5.QtGui import QPainter, QBrush, QPen
 from scipy import ndimage, signal, interpolate
 from PyQt5.QtCore import Qt
+import CV404SIFT as sift_file
 
 class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
@@ -97,7 +98,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # sift 
         self.pushButton_SIFT_load_A.clicked.connect(self.sift_imgA_load)
         self.pushButton_SIFT_load_B.clicked.connect(self.sift_imgB_load)
-        self.pushButton_SIFT_match.clicked.connect(self.sift_match)
+        self.pushButton_SIFT_match.clicked.connect(self.sift_match_btn)
 
 
     ############### SIFT ############
@@ -120,7 +121,7 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             options = QFileDialog.Options()
             self.siftB, _ = QFileDialog.getOpenFileName(
                 None, 'Upload Image', '', '*.png *.jpg *.jpeg', options=options)
-            pixmap = QPixmap(self.siftA)
+            pixmap = QPixmap(self.siftB)
             pixmap = pixmap.scaled(self.label_input_SIFT_B.width(
             ), self.label_input_SIFT_B.height(), QtCore.Qt.KeepAspectRatio)
             self.label_input_SIFT_B.setPixmap(pixmap)
@@ -128,14 +129,20 @@ class ApplicationWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as err:
             print(err)
 
-    def sift_match(self):
-       self.pushButton_SIFT_load_A.setEnabled(False)
-       self.pushButton_SIFT_load_B.setEnabled(False)
-       self.pushButton_SIFT_match.setEnabled(False)
-       self.spinBox_octaves.setReadOnly(True)
-       self.spinBox_scales.setReadOnly(True)
-       self.doubleSpinBox_sift_sigma.setReadOnly(True)
-       self.spinBox_sift_k.setReadOnly(True)
+    def sift_match_btn(self):
+        self.pushButton_SIFT_load_A.setEnabled(False)
+        self.pushButton_SIFT_load_B.setEnabled(False)
+        self.pushButton_SIFT_match.setEnabled(False)
+        self.spinBox_octaves.setReadOnly(True)
+        self.spinBox_scales.setReadOnly(True)
+        self.doubleSpinBox_sift_sigma.setReadOnly(True)
+        self.spinBox_sift_k.setReadOnly(True)
+
+        obj_sift = sift_file.sift()
+        obj_sift.sift_done(self.siftA,self.siftB)
+
+
+
 
 
        

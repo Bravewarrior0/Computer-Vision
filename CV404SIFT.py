@@ -28,16 +28,16 @@ class sift:
             self.K = sqrt(con_ki)
 
 
-        logging.basicConfig(stream=sys.stdout, level=logging.INFO)
-        # Test
-        logger = logging.getLogger('SIFT')
-        # The following are suggested by SIFT author
-        SIGMA_SEQ = lambda s: [ (self.K**i)*s for i in range(self.N_SCALES) ] # (s, √2s , 2s, 2√2 s , 4s )
-        SIGMA_SIFT = SIGMA_SEQ(self.SIGMA) #
-        KERNEL_RADIUS = lambda s : 2 * int(round(s))
-        KERNELS_SIFT = [ gaussian_kernel2d(std = s, 
-                                        kernlen = 2 * KERNEL_RADIUS(s) + 1) 
-                        for s in SIGMA_SIFT ]
+            logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+            # Test
+            self.logger = logging.getLogger('SIFT')
+            # The following are suggested by SIFT author
+            SIGMA_SEQ = lambda s: [ (self.K**i)*s for i in range(self.N_SCALES) ] # (s, √2s , 2s, 2√2 s , 4s )
+            SIGMA_SIFT = SIGMA_SEQ(self.SIGMA) #
+            self.KERNEL_RADIUS = lambda s : 2 * int(round(s))
+            self.KERNELS_SIFT = [ self.gaussian_kernel2d(std = s, 
+                                            kernlen = 2 * self.KERNEL_RADIUS(s) + 1) 
+                            for s in SIGMA_SIFT ]
         
         
         def rgb2gray(self, rgb_image):
@@ -51,7 +51,7 @@ class sift:
 
         def gaussian_kernel2d(self, kernlen=7, std=1.5):
             """Returns a 2D Gaussian kernel array."""
-            gkern1d = gaussian_kernel1d(kernlen,std)
+            gkern1d = self.gaussian_kernel1d(kernlen,std)
             gkern2d = np.outer(gkern1d, gkern1d)
             return gkern2d
 
@@ -80,8 +80,8 @@ class sift:
                         [-2,0,2],
                         [-1,0,1]])
             dy = dx.T
-            gx = signal.convolve2d( img , dx , boundary='symm', mode='same' )
-            gy = signal.convolve2d( img , dy , boundary='symm', mode='same' )
+            gx = convolve2d( img , dx , boundary='symm', mode='same' )
+            gy = convolve2d( img , dy , boundary='symm', mode='same' )
             magnitude = np.sqrt( gx * gx + gy * gy )
             direction = np.rad2deg( np.arctan2( gy , gx )) % 360
             return gx,gy,magnitude,direction
@@ -96,16 +96,16 @@ class sift:
             dog = []
             base = rescale( img, 2, anti_aliasing=False) 
             octaves.append([ convolve2d( base , kernel , 'same', 'symm') 
-                            for kernel in KERNELS_SIFT ])
+                            for kernel in self.KERNELS_SIFT ])
             dog.append([ s2 - s1 
                         for (s1,s2) in zip( octaves[0][:-1], octaves[0][1:])])
             for i in range(1,self.N_OCTAVES):
                 base = octaves[i-1][2][::2,::2] # 2x subsampling 
                 octaves.append([base] + [convolve2d( base , kernel , 'same', 'symm') 
-                                        for kernel in KERNELS_SIFT[1:] ])
+                                        for kernel in self.KERNELS_SIFT[1:] ])
                 dog.append([ s2 - s1 
                             for (s1,s2) in zip( octaves[i][:-1], octaves[i][1:])])
-                logger.info('Done {}/{} octaves'.format(i+1, self.N_OCTAVES))
+                self.logger.info('Done {}/{} octaves'.format(i+1, self.N_OCTAVES))
             return dog , octaves
 
 
@@ -153,14 +153,14 @@ class sift:
                     keypoints = np.full( dog.shape, False, dtype = np.bool)
                     candidates = set( (i,j) for i in range(1, dog.shape[0] - 1) for j in range(1, dog.shape[1] - 1))
                     search_size = len(candidates)
-                    candidates = candidates & set(corners(dog)) & set(contrast( dog , img_max, threshold ))
+                    candidates = candidates & set(self.corners(dog)) & set(self.contrast( dog , img_max, threshold ))
                     search_size_filtered = len(candidates)
-                    logger.info('Search size reduced by: {:.1f}%'.format( 100*(1 - search_size_filtered/search_size )))
+                    self.logger.info('Search size reduced by: {:.1f}%'.format( 100*(1 - search_size_filtered/search_size )))
                     for i,j in candidates:
                         slice1 = img_octave_dogs[dog_idx -1][i-1:i+2, j-1:j+2]
                         slice2 = img_octave_dogs[dog_idx   ][i-1:i+2, j-1:j+2]
                         slice3 = img_octave_dogs[dog_idx +1][i-1:i+2, j-1:j+2]
-                        if cube_extrema( slice1, slice2, slice3 ):
+                        if self.cube_extrema( slice1, slice2, slice3 ):
                             keypoints[i,j] = True
                     keypoints_per_octave.append(keypoints)
                 octaves_keypoints.append(keypoints_per_octave)
@@ -175,16 +175,16 @@ class sift:
                 for idx,scale_keypoints in enumerate(octave_keypoints):
                     scale_idx = idx + 1 ## idx+1 to be replaced by quadratic localization
                     gaussian_img = img_octave_gaussians[ scale_idx ] 
-                    sigma = 1.5 * self.SIGMA * ( 2 ** octave_idx ) * ( K ** (scale_idx))
-                    radius = KERNEL_RADIUS(sigma)
-                    kernel = gaussian_kernel2d(std = sigma, kernlen = 2 * radius + 1)
-                    gx,gy,magnitude,direction = sift_gradient(gaussian_img)
+                    sigma = 1.5 * self.SIGMA * ( 2 ** octave_idx ) * ( self.K ** (scale_idx))
+                    radius = self.KERNEL_RADIUS(sigma)
+                    kernel = self.gaussian_kernel2d(std = sigma, kernlen = 2 * radius + 1)
+                    gx,gy,magnitude,direction = self.sift_gradient(gaussian_img)
                     direction_idx = np.round( direction * num_bins / 360 ).astype(int)          
                     
                     for i,j in map( tuple , np.argwhere( scale_keypoints ).tolist() ):
                         window = [i-radius, i+radius+1, j-radius, j+radius+1]
-                        mag_win = padded_slice( magnitude , window )
-                        dir_idx = padded_slice( direction_idx, window )
+                        mag_win = self.padded_slice( magnitude , window )
+                        dir_idx = self.padded_slice( direction_idx, window )
                         weight = mag_win * kernel 
                         hist = np.zeros(num_bins, dtype=np.float32)
                         
@@ -221,15 +221,15 @@ class sift:
                     data['index'] = (oct_idx,scale_idx)
                     gaussian_img = img_gaussians[oct_idx][ scale_idx ] 
                     sigma = 1.5 * self.SIGMA * ( 2 ** oct_idx ) * ( self.K ** (scale_idx))
-                    data['kernel'] = gaussian_kernel2d(std = sigma, kernlen = 16)                
+                    data['kernel'] = self.gaussian_kernel2d(std = sigma, kernlen = 16)                
 
-                    gx,gy,magnitude,direction = sift_gradient(gaussian_img)
+                    gx,gy,magnitude,direction = self.sift_gradient(gaussian_img)
                     data['magnitude'] = magnitude
                     data['direction'] = direction
 
-                window_mag = rotated_subimage(data['magnitude'],(j,i), orientation, 16,16)
+                window_mag = self.rotated_subimage(data['magnitude'],(j,i), orientation, 16,16)
                 window_mag = window_mag * data['kernel']
-                window_dir = rotated_subimage(data['direction'],(j,i), orientation, 16,16)
+                window_dir = self.rotated_subimage(data['direction'],(j,i), orientation, 16,16)
                 window_dir = (((window_dir - orientation) % 360) * num_bins / 360.).astype(int)
 
                 features = []
@@ -254,10 +254,10 @@ class sift:
 
         def pipeline(self, input_img ):
             img_max = input_img.max()
-            dogs, octaves = image_dog( input_img )
-            keypoints = dog_keypoints( dogs , img_max , 0.03 )
-            keypoints_ijso = dog_keypoints_orientations( octaves , keypoints , 36 )
-            points,descriptors = extract_sift_descriptors128(octaves , keypoints_ijso , 8)
+            dogs, octaves = self.image_dog( input_img )
+            keypoints = self.dog_keypoints( dogs , img_max , 0.03 )
+            keypoints_ijso = self.dog_keypoints_orientations( octaves , keypoints , 36 )
+            points,descriptors = self.extract_sift_descriptors128(octaves , keypoints_ijso , 8)
             return points, descriptors
 
 
@@ -280,8 +280,8 @@ class sift:
             desc_a = np.array( desc_a , dtype = np.float32 )
             desc_b = np.array( desc_b , dtype = np.float32 )
 
-            pts_a = kp_list_2_opencv_kp_list(pts_a)
-            pts_b = kp_list_2_opencv_kp_list(pts_b)
+            pts_a = self.kp_list_2_opencv_kp_list(pts_a)
+            pts_b = self.kp_list_2_opencv_kp_list(pts_b)
 
             # create BFMatcher object
             # BFMatcher with default params
@@ -298,11 +298,35 @@ class sift:
 
             cv2.drawMatches(img_a,pts_a,img_b,pts_b,good, outImg = img_match,
                         flags=cv2.DrawMatchesFlags_NOT_DRAW_SINGLE_POINTS)
-            plt.figure(figsize=(20,20))
+            """ plt.figure(figsize=(20,20))
             plt.imshow(img_match)
-            plt.show()
+            plt.show() """
+            return img_match
 
 
 
 
-        
+        def sift_done(self, pathImg, pathPattern):
+            final_match =[]
+            image_patterns = []
+            img = np.array(Image.open(pathImg))
+            img,ratio = self.sift_resize(img)
+            pattern,_ = self.sift_resize(np.array(Image.open(pathPattern)), ratio )
+            image_patterns.append(pattern)
+            image_patterns.append(rotate(pattern, 90))
+            img_gray = self.rgb2gray(img)
+            img_patterns_gray = [self.rgb2gray( patrn ) for patrn in image_patterns ]
+            img_sift = self.pipeline(img_gray)
+            img_patterns_sift = []
+            for patt in img_patterns_gray:
+                img_patterns_sift.append( self.pipeline( patt ))
+
+            for i in range(len(image_patterns)):
+                pattern = image_patterns[i]
+                pattern_sift = img_patterns_sift[i]
+                matched = self.match(img, img_sift[0], img_sift[1], pattern, pattern_sift[0], pattern_sift[1]) 
+                final_match.append(matched)   
+            
+            return final_match
+            
+           
