@@ -48,5 +48,13 @@ This repo is the applying of basics conecpts that have been learnt in [SBE404B-2
 8. `CV404SIFT.py`: include the implementation of SIFT technique (15).
 
 ## Test
-To try the project run gui.py
-
+To try the project run [gui.py](gui.py)
+### requirements
+* [python3](https://www.python.org/downloads/) or [anaconda](https://www.anaconda.com/)
+* numpy
+* openCV (CV2) used to show images
+* scipy
+* matplotlib
+* pillow image (PIL)
+* PyQt5
+* pyqtgraph
